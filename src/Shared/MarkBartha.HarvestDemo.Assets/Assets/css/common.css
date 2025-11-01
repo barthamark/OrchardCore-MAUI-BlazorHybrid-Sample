@@ -1,0 +1,6 @@
+/*noinspection CssUnknownTarget*/
+@import "tailwindcss";
+
+body {
+    @apply flex flex-col min-h-screen;
+}

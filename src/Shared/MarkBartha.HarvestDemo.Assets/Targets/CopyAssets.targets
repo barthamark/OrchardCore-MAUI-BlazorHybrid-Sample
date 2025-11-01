@@ -1,0 +1,117 @@
+<Project>
+
+  <PropertyGroup>
+    <SharedAssetsFolder>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Assets\</SharedAssetsFolder>
+    <SharedPublishedAssetsFolder>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\wwwroot\</SharedPublishedAssetsFolder>
+    <LocalAssetsFolder>$(ProjectDir)Assets\</LocalAssetsFolder>
+    <AssetsDestinationFolder>$(ProjectDir)wwwroot\</AssetsDestinationFolder>
+    <SharedPublishedAssetsDestinationFolder>$(AssetsDestinationFolder)</SharedPublishedAssetsDestinationFolder>
+
+    <AssetsIncludePattern>**\*</AssetsIncludePattern>
+    <AssetsExcludePattern>css\**\*</AssetsExcludePattern>
+    <SharedPublishedAssetsIncludePattern>**\*</SharedPublishedAssetsIncludePattern>
+    <SharedPublishedAssetsExcludePattern>css\**\*</SharedPublishedAssetsExcludePattern>
+
+    <AutoCopyOverwriteReadOnlyFiles>true</AutoCopyOverwriteReadOnlyFiles>
+    <AutoCopyFailOnError>true</AutoCopyFailOnError>
+  </PropertyGroup>
+
+  <Target Name="AutoCopyAssets" BeforeTargets="EmbeddModuleAssets;OrchardCoreEmbedModuleAssets;Compile">
+    <Message Text="Copying assets in project: $(MSBuildProjectName)" Importance="high" />
+
+    <ItemGroup>
+      <LocalFilesRaw Include="$(LocalAssetsFolder)$(AssetsIncludePattern)"
+                     Exclude="$(LocalAssetsFolder)$(AssetsExcludePattern)"
+                     Condition="Exists('$(LocalAssetsFolder)')" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <LocalFilesToCopy Include="@(LocalFilesRaw)" Condition="Exists('%(LocalFilesRaw.FullPath)')">
+        <RelativePath>$([System.IO.Path]::GetRelativePath('$(LocalAssetsFolder)', '%(LocalFilesRaw.FullPath)'))</RelativePath>
+        <DestinationRoot>$(AssetsDestinationFolder)</DestinationRoot>
+      </LocalFilesToCopy>
+    </ItemGroup>
+
+    <ItemGroup>
+      <SharedFilesRaw Include="$(SharedAssetsFolder)$(AssetsIncludePattern)"
+                      Exclude="$(SharedAssetsFolder)$(AssetsExcludePattern)"
+                      Condition="Exists('$(SharedAssetsFolder)')" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <SharedFilesToCopy Include="@(SharedFilesRaw)" Condition="Exists('%(SharedFilesRaw.FullPath)')">
+        <RelativePath>$([System.IO.Path]::GetRelativePath('$(SharedAssetsFolder)', '%(SharedFilesRaw.FullPath)'))</RelativePath>
+        <DestinationRoot>$(AssetsDestinationFolder)</DestinationRoot>
+      </SharedFilesToCopy>
+    </ItemGroup>
+
+    <ItemGroup>
+      <SharedPublishedFilesRaw Include="$(SharedPublishedAssetsFolder)$(SharedPublishedAssetsIncludePattern)"
+                               Exclude="$(SharedPublishedAssetsFolder)$(SharedPublishedAssetsExcludePattern)"
+                               Condition="Exists('$(SharedPublishedAssetsFolder)')" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <SharedPublishedFilesToCopy Include="@(SharedPublishedFilesRaw)" Condition="Exists('%(SharedPublishedFilesRaw.FullPath)')">
+        <RelativePath>$([System.IO.Path]::GetRelativePath('$(SharedPublishedAssetsFolder)', '%(SharedPublishedFilesRaw.FullPath)'))</RelativePath>
+        <DestinationRoot>$(SharedPublishedAssetsDestinationFolder)</DestinationRoot>
+      </SharedPublishedFilesToCopy>
+    </ItemGroup>
+
+    <ItemGroup>
+      <FilesToCopyFiltered Include="@(LocalFilesToCopy);@(SharedFilesToCopy);@(SharedPublishedFilesToCopy)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AssetDestinationRoot Include="$(AssetsDestinationFolder)" Condition="'$(AssetsDestinationFolder)' != ''" />
+      <AssetDestinationRoot Include="$(SharedPublishedAssetsDestinationFolder)"
+                            Condition="'$(SharedPublishedAssetsDestinationFolder)' != ''" />
+    </ItemGroup>
+
+    <Message Text="Files identified for auto-copy:" Importance="low" />
+    <Message Text="  - %(FilesToCopyFiltered.Identity) -> %(FilesToCopyFiltered.DestinationRoot)%(FilesToCopyFiltered.RelativePath)" Importance="low" />
+
+    <MakeDir Directories="@(AssetDestinationRoot)" Condition="'@(AssetDestinationRoot)' != ''" />
+
+    <Copy
+      SourceFiles="@(FilesToCopyFiltered)"
+      DestinationFiles="@(FilesToCopyFiltered->'%(DestinationRoot)%(RelativePath)')"
+      OverwriteReadOnlyFiles="$(AutoCopyOverwriteReadOnlyFiles)"
+      ContinueOnError="$(AutoCopyFailOnError)" />
+
+    <Message Text="Auto-copy complete for project: $(MSBuildProjectName)" Importance="high" />
+  </Target>
+
+  <Target Name="CleanAutoCopiedAssets" AfterTargets="Clean">
+    <Message Text="Starting CleanAutoCopiedAssets for project: $(MSBuildProjectName)" Importance="high" />
+    <Message Text="  Cleaning destination: $(AssetsDestinationFolder)" Importance="high" />
+    <Message Text="  Patterns to clean: $(AssetsIncludePattern)" Importance="high" />
+    <Message Text="  Excluding from clean: $(AssetsExcludePattern)" Importance="high" />
+
+    <ItemGroup>
+      <AllDestinationFilesToClean Include="$(AssetsDestinationFolder)$(AssetsIncludePattern)" />
+      <FilesToCleanFiltered
+        Include="@(AllDestinationFilesToClean)"
+        Exclude="$(AssetsDestinationFolder)$(AssetsExcludePattern)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(SharedPublishedAssetsDestinationFolder)' != '' and
+                          '$(SharedPublishedAssetsDestinationFolder)' != '$(AssetsDestinationFolder)'">
+      <AllDestinationFilesToClean Include="$(SharedPublishedAssetsDestinationFolder)$(SharedPublishedAssetsIncludePattern)" />
+      <FilesToCleanFiltered
+        Include="@(AllDestinationFilesToClean)"
+        Exclude="$(SharedPublishedAssetsDestinationFolder)$(SharedPublishedAssetsExcludePattern)" />
+    </ItemGroup>
+
+    <Message Text="  Cleaning additional destination: $(SharedPublishedAssetsDestinationFolder)" Importance="high"
+             Condition="'$(SharedPublishedAssetsDestinationFolder)' != '' and '$(SharedPublishedAssetsDestinationFolder)' != '$(AssetsDestinationFolder)'" />
+
+    <Message Text="Files identified for auto-cleanup:" Importance="low" />
+    <Message Text="  - %(FilesToCleanFiltered.Identity)" Importance="low" />
+
+    <Delete Files="@(FilesToCleanFiltered)" ContinueOnError="false" />
+
+    <Message Text="Auto-cleanup complete for project: $(MSBuildProjectName)" Importance="high" />
+  </Target>
+
+</Project>

@@ -1,0 +1,12 @@
+<Project>
+
+  <PropertyGroup>
+    <TailwindBuildCommand>dotnet tailwind exec -i ./Assets/css/app.css -o ./wwwroot/css/app.css --minify</TailwindBuildCommand>
+  </PropertyGroup>
+
+  <Target Name="RunTailwindBuild" BeforeTargets="EmbeddModuleAssets;OrchardCoreEmbedModuleAssets;Compile">
+    <Message Text="Running Tailwind build for project: $(MSBuildProjectName)" Importance="high" />
+    <Exec Command="$(TailwindBuildCommand)" />
+  </Target>
+
+</Project>

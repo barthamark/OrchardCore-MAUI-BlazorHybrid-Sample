@@ -1,0 +1,13 @@
+{
+  "version": "3.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "lucide@0.552.0",
+      "destination": "wwwroot/vendors/lucide",
+      "files": [
+        "dist/cjs/lucide.min.js"
+      ]
+    }
+  ]
+}
