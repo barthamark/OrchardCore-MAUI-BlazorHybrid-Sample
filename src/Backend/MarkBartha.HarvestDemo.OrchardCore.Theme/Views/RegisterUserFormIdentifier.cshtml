@@ -30,11 +30,22 @@
         <label asp-for="Password" class="label">
             @T["Password"]
         </label>
-        <input asp-for="Password"
-               type="password"
-               autocomplete="new-password"
-               required
-               class="input" />
+        <div class="relative">
+            <input asp-for="Password"
+                   type="password"
+                   autocomplete="new-password"
+                   required
+                   class="input pr-12" />
+            <button type="button"
+                    class="btn-icon absolute inset-y-0 right-2 text-gray-500 hover:text-gray-700"
+                    data-password-toggle="#@Html.IdFor(m => m.Password)"
+                    data-show-label='@T["Show password"]'
+                    data-hide-label='@T["Hide password"]'>
+                <i data-lucide="eye" class="h-4 w-4" aria-hidden="true" data-password-icon="show"></i>
+                <i data-lucide="eye-off" class="h-4 w-4 hidden" aria-hidden="true" data-password-icon="hide"></i>
+                <span class="sr-only">@T["Show password"]</span>
+            </button>
+        </div>
         <span asp-validation-for="Password" class="text-sm text-red-500 mt-1 block"></span>
     </div>
 
@@ -42,11 +53,77 @@
         <label asp-for="ConfirmPassword" class="label">
             @T["Confirm password"]
         </label>
-        <input asp-for="ConfirmPassword"
-               type="password"
-               autocomplete="new-password"
-               required
-               class="input" />
+        <div class="relative">
+            <input asp-for="ConfirmPassword"
+                   type="password"
+                   autocomplete="new-password"
+                   required
+                   class="input pr-12" />
+            <button type="button"
+                    class="btn-icon absolute inset-y-0 right-2 text-gray-500 hover:text-gray-700"
+                    data-password-toggle="#@Html.IdFor(m => m.ConfirmPassword)"
+                    data-show-label='@T["Show password"]'
+                    data-hide-label='@T["Hide password"]'>
+                <i data-lucide="eye" class="h-4 w-4" aria-hidden="true" data-password-icon="show"></i>
+                <i data-lucide="eye-off" class="h-4 w-4 hidden" aria-hidden="true" data-password-icon="hide"></i>
+                <span class="sr-only">@T["Show password"]</span>
+            </button>
+        </div>
         <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500 mt-1 block"></span>
     </div>
 </div>
+
+<script at="Foot">
+    if (!window.initPasswordToggles) {
+        window.initPasswordToggles = function () {
+            var buttons = Array.from(document.querySelectorAll('[data-password-toggle]'));
+            buttons.forEach(function (button) {
+                if (button.dataset.passwordToggleInit === 'true') {
+                    return;
+                }
+
+                var selector = button.getAttribute('data-password-toggle');
+                if (!selector) {
+                    return;
+                }
+
+                var target = document.querySelector(selector);
+                if (!target) {
+                    return;
+                }
+
+                var showLabel = button.getAttribute('data-show-label') || 'Show password';
+                var hideLabel = button.getAttribute('data-hide-label') || 'Hide password';
+                var srLabel = button.querySelector('.sr-only');
+
+                button.dataset.passwordToggleInit = 'true';
+                button.setAttribute('aria-pressed', 'false');
+                button.setAttribute('aria-label', showLabel);
+
+                button.addEventListener('click', function () {
+                    var reveal = target.getAttribute('type') === 'password';
+                    target.setAttribute('type', reveal ? 'text' : 'password');
+                    button.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+                    button.setAttribute('aria-label', reveal ? hideLabel : showLabel);
+                    if (srLabel) {
+                        srLabel.textContent = reveal ? hideLabel : showLabel;
+                    }
+
+                    button.querySelectorAll('[data-password-icon="show"]').forEach(function (icon) {
+                        icon.classList.toggle('hidden', reveal);
+                    });
+
+                    button.querySelectorAll('[data-password-icon="hide"]').forEach(function (icon) {
+                        icon.classList.toggle('hidden', !reveal);
+                    });
+                });
+            });
+        };
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.initPasswordToggles, { once: true });
+    } else {
+        window.initPasswordToggles();
+    }
+</script>
