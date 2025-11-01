@@ -1,0 +1,208 @@
+Main screen (header + content + desktop add + list + empty state + FAB)
+<!-- App Shell -->
+<div class="min-h-screen bg-surface-1 flex flex-col">
+
+  <!-- Header -->
+  <header class="page-header">
+    <h1 class="text-2xl font-bold">Tasks</h1>
+
+    <!-- Hamburger -->
+    <button type="button"
+            class="btn-icon"
+            aria-label="Open menu"
+            data-action="open-menu">
+      <i class="icon-menu" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <!-- Main content -->
+  <main class="content-container page-padding pb-32 md:pb-6">
+
+    <!-- Desktop: Add Todo -->
+    <section class="hidden md:block mb-6">
+      <div class="card p-4 shadow-sm flex gap-3">
+        <input type="text"
+               class="input flex-1"
+               placeholder="Add a new task..."
+               name="newTodo"
+               autocomplete="off"
+               data-field="new-todo" />
+        <button type="button"
+                class="btn btn-primary"
+                data-action="add-todo">
+          <i class="icon-plus" aria-hidden="true"></i>
+          <span class="sr-only">Add</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Mobile: Add Todo (toggle 'hidden' on submit FAB) -->
+    <section class="md:hidden mb-6 hidden" data-state="adding">
+      <div class="card shadow-sm">
+        <input type="text"
+               class="input w-full"
+               placeholder="Add a new task..."
+               name="newTodoMobile"
+               autocomplete="off"
+               data-field="new-todo-mobile" />
+
+        <div class="flex gap-2 mt-3">
+          <button type="button"
+                  class="btn btn-primary flex-1"
+                  data-action="add-todo-mobile">
+            Add
+          </button>
+          <button type="button"
+                  class="btn btn-ghost flex-1"
+                  data-action="cancel-add-mobile">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Todo List -->
+    <section aria-labelledby="todo-list-heading" class="space-y-3" role="list">
+      <h2 id="todo-list-heading" class="sr-only">To-dos</h2>
+
+      <!-- Item (unchecked) -->
+      <article role="listitem"
+               class="bg-surface-0 rounded-lg p-4 shadow-sm flex items-center gap-3 group hover:shadow-md transition-shadow">
+        <button type="button"
+                class="checkbox-circle ring-focus"
+                aria-label="Mark complete"
+                data-action="toggle"
+                data-id="1">
+          <!-- empty state (unchecked) -->
+        </button>
+
+        <span class="flex-1">
+          Design new landing page
+        </span>
+
+        <button type="button"
+                class="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Delete task"
+                data-action="delete"
+                data-id="1">
+          <i class="icon-trash-2 text-gray-400" aria-hidden="true"></i>
+        </button>
+      </article>
+
+      <!-- Item (checked) -->
+      <article role="listitem"
+               class="bg-surface-0 rounded-lg p-4 shadow-sm flex items-center gap-3 group hover:shadow-md transition-shadow">
+        <button type="button"
+                class="checkbox-circle checkbox-circle--checked ring-focus"
+                aria-label="Mark incomplete"
+                data-action="toggle"
+                data-id="2">
+          <i class="icon-check text-white text-sm" aria-hidden="true"></i>
+        </button>
+
+        <span class="flex-1 line-through opacity-50">
+          Update documentation
+        </span>
+
+        <button type="button"
+                class="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Delete task"
+                data-action="delete"
+                data-id="2">
+          <i class="icon-trash-2 text-gray-400" aria-hidden="true"></i>
+        </button>
+      </article>
+
+    </section>
+
+    <!-- Empty state (toggle hidden when there are items) -->
+    <section class="text-center py-12 hidden" data-state="empty">
+      <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+        <i class="icon-check text-xl" aria-hidden="true"></i>
+      </div>
+      <p class="text-[color:var(--color-text-muted)] text-lg">No tasks yet</p>
+    </section>
+
+  </main>
+
+  <!-- FAB (mobile only) -->
+  <button type="button"
+          class="fab md:hidden"
+          aria-label="Add task"
+          data-action="open-add-mobile">
+    <i class="icon-plus" aria-hidden="true"></i>
+  </button>
+</div>
+
+Hamburger Menu (backdrop + panel)
+
+Mount this near the end of body. Toggle visibility in your code by adding/removing hidden or with data-open attributes and transforms.
+
+<!-- Backdrop (click to close) -->
+<div class="backdrop hidden"
+     data-part="backdrop"
+     data-action="close-menu"
+     aria-hidden="true"></div>
+
+<!-- Slide-over panel -->
+<aside class="menu-panel translate-x-full"
+       data-part="panel"
+       aria-label="Main menu"
+       aria-hidden="true">
+  <!-- Header -->
+  <div class="p-6 border-b border-[color:var(--color-border)]">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold">Menu</h2>
+      <button type="button" class="btn-icon" aria-label="Close menu" data-action="close-menu">
+        <i class="icon-x" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- User -->
+    <div class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center">
+        <i class="icon-user" aria-hidden="true"></i>
+      </div>
+      <div>
+        <p class="font-semibold">John Doe</p>
+        <p class="text-sm text-[color:var(--color-text-muted)]">john@example.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items -->
+  <nav class="p-4">
+    <a href="/account" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors">
+      <i class="icon-user text-gray-600" aria-hidden="true"></i>
+      <span class="font-medium">Account</span>
+    </a>
+
+    <button type="button"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-left group"
+            data-action="sign-out">
+      <i class="icon-log-out text-gray-600 group-hover:text-red-600" aria-hidden="true"></i>
+      <span class="font-medium text-gray-700 group-hover:text-red-600">Sign Out</span>
+    </button>
+  </nav>
+
+  <!-- Footer -->
+  <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-[color:var(--color-border)]">
+    <p class="text-xs text-[color:var(--color-text-muted)] text-center">Version 1.0.0</p>
+  </div>
+</aside>
+
+Integration notes
+
+Open/close menu:
+
+Add hidden → remove it on .backdrop.
+
+Add/remove translate-x-full on .menu-panel to slide.
+
+Mobile add flow: toggle the section[data-state="adding"] hidden/unhidden when the FAB is pressed. Hide it after adding/canceling.
+
+Empty state: hide the list container and unhide the data-state="empty" section when there are zero items.
+
+Accessibility: buttons include aria-label; consider managing aria-expanded and aria-hidden as you toggle states.
+
+If you want, I can also provide a single Razor page version wired with minimal Alpine.js or with Blazor bindings, but this should be perfect for Codex to drop into your current structure.
