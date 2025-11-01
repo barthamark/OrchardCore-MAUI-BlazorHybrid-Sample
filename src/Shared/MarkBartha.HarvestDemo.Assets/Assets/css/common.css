@@ -53,9 +53,11 @@
 }
 
 /* 3) ACCESSIBILITY/FOCUS helper */
-@layer components {
-    /* Add this class to any interactive elem that should get a nice focus ring */
-    .ring-focus { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2; }
+@utility ring-focus {
+    @apply focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-brand/60
+    focus-visible:ring-offset-2;
 }
 
 /* 4) PRIMITIVE COMPONENTS – tiny, reusable, not a full UI kit */

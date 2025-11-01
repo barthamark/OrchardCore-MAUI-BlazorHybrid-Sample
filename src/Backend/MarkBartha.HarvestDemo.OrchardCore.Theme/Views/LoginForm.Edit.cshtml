@@ -3,30 +3,32 @@
       asp-area="OrchardCore.Users"
       asp-route-returnurl="@ViewData["ReturnUrl"]"
       method="post"
-      class="space-y-6 no-multisubmit">
+      class="space-y-5 no-multisubmit">
 
     @if (Model.Content != null)
     {
-        @await DisplayAsync(Model.Content)
+        <div class="space-y-5">
+            @await DisplayAsync(Model.Content)
+        </div>
     }
 
-    <div>
-        <button type="submit"
-                class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-150"
-                tabindex="4">
-            @T["Log in"]
-        </button>
-    </div>
+    <button type="submit"
+            class="btn btn-primary w-full"
+            tabindex="4">
+        @T["Sign in"]
+    </button>
 
     @if (Model.Links != null)
     {
-        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+        <div class="text-sm text-[color:var(--color-text-muted)] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             @await DisplayAsync(Model.Links)
-        </ul>
+        </div>
     }
 
     @if (Model.Footer != null)
     {
-        @await DisplayAsync(Model.Footer)
+        <div class="text-center text-sm text-[color:var(--color-text-muted)]">
+            @await DisplayAsync(Model.Footer)
+        </div>
     }
 </form>

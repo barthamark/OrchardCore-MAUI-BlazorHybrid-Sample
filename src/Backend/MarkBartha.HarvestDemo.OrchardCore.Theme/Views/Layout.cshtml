@@ -1,40 +1,47 @@
 ﻿<!DOCTYPE html>
 <html lang="@Orchard.CultureName()" dir="@Orchard.CultureDir()">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
 
     <title>@RenderTitleSegments(Site.SiteName, "before")</title>
-    
-    <link rel="icon" type="image/png" sizes="16x16" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/favicon-96x96.png")">
-    <link rel="icon" type="image/png" sizes="32x32" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/favicon-96x96.png")">
-    <link rel="apple-touch-icon" sizes="180x180" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/apple-touch-icon.png")">
-    <link rel="icon" type="image/png" sizes="192x192" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/web-app-manifest-192x192.png")">
-    <link rel="icon" type="image/png" sizes="512x512" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/web-app-manifest-512x512.png")">
+
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/favicon-96x96.png")">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/favicon-96x96.png")">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/apple-touch-icon.png")">
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/web-app-manifest-192x192.png")">
+    <link rel="icon" type="image/png" sizes="512x512"
+          href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/web-app-manifest-512x512.png")">
 
     <style asp-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/css/app.css"></style>
-    
-    <script asp-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.min.js" debug-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.js" at="Foot"></script>
+
+    <script asp-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.min.js"
+            debug-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.js" at="Foot"></script>
     @* <script asp-src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" at="Foot"></script> *@
-    
-    <resources type="Header" />
-    
+
+    <resources type="Header"/>
+
     @await RenderSectionAsync("HeadMeta", required: false)
 </head>
-<body class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-<div class="w-full max-w-md space-y-6">
-    @await RenderSectionAsync("Header", required: false)
-    @await RenderSectionAsync("Messages", required: false)
+<body>
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
 
-    <div class="bg-white shadow-xl rounded-2xl p-8">
-        @await RenderBodyAsync()
+    <div class="w-full max-w-md">
+        @await RenderSectionAsync("Header", required: false)
+        @await RenderSectionAsync("Messages", required: false)
+
+            @await RenderBodyAsync()
+
+        @await RenderSectionAsync("Footer", required: false)
     </div>
+</main>
 
-    @await RenderSectionAsync("Footer", required: false)
-</div>
-
-<resources type="Footer" />
+<resources type="Footer"/>
 <script>
     lucide.createIcons();
 </script>

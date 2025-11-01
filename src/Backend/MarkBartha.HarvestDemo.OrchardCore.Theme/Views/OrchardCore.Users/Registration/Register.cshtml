@@ -1,1 +1,21 @@
-﻿@await DisplayAsync(Model)
+<div class="text-center mb-8">
+    <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+        <i data-lucide="circle-check-big" aria-hidden="true"></i>
+    </div>
+    <h1 class="text-3xl font-bold">@T["Create account"]</h1>
+    <p class="text-[color:var(--color-text-muted)]">@T["Sign up to get started"]</p>
+</div>
+
+<div class="card">
+    @await DisplayAsync(Model)
+</div>
+
+<p class="text-center mt-6 text-[color:var(--color-text-muted)]">
+    @T["Already have an account?"]
+    <a asp-area="OrchardCore.Users"
+       asp-controller="Account"
+       asp-action="Login"
+       class="font-medium text-brand hover:underline">
+        @T["Sign in"]
+    </a>
+</p>

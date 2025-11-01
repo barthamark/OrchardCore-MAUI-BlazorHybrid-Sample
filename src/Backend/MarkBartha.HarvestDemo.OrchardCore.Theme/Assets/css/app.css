@@ -1,5 +1,3 @@
 @import "../../../../Shared/MarkBartha.HarvestDemo.Assets/Assets/css/common.css";
 
-body {
-    background: red;
-}
+@source "../../Views/**/*.cshtml";

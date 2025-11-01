@@ -1,40 +1,52 @@
-﻿@model RegisterViewModel
+@model RegisterViewModel
 
-<div class="mb-6">
-    <label asp-for="UserName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        @T["Username"]
-    </label>
-    <input asp-for="UserName"
-           autofocus
-           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white" />
-    <span asp-validation-for="UserName" class="text-sm text-red-500 mt-1 block"></span>
-</div>
+<div class="space-y-5">
+    <div>
+        <label asp-for="UserName" class="label">
+            @T["Full name"]
+        </label>
+        <input asp-for="UserName"
+               class="input"
+               placeholder="@T["John Doe"]"
+               required
+               autofocus />
+        <span asp-validation-for="UserName" class="text-sm text-red-500 mt-1 block"></span>
+    </div>
 
-<div class="mb-6">
-    <label asp-for="Email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        @T["Email address"]
-    </label>
-    <input asp-for="Email"
-           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white" />
-    <span asp-validation-for="Email" class="text-sm text-red-500 mt-1 block"></span>
-</div>
+    <div>
+        <label asp-for="Email" class="label">
+            @T["Email"]
+        </label>
+        <input asp-for="Email"
+               type="email"
+               autocomplete="username"
+               required
+               class="input"
+               placeholder="you@example.com" />
+        <span asp-validation-for="Email" class="text-sm text-red-500 mt-1 block"></span>
+    </div>
 
-<div class="mb-6">
-    <label asp-for="Password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        @T["Password"]
-    </label>
-    <input asp-for="Password"
-           autocomplete="new-password"
-           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white" />
-    <span asp-validation-for="Password" class="text-sm text-red-500 mt-1 block"></span>
-</div>
+    <div>
+        <label asp-for="Password" class="label">
+            @T["Password"]
+        </label>
+        <input asp-for="Password"
+               type="password"
+               autocomplete="new-password"
+               required
+               class="input" />
+        <span asp-validation-for="Password" class="text-sm text-red-500 mt-1 block"></span>
+    </div>
 
-<div class="mb-6">
-    <label asp-for="ConfirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        @T["Confirm password"]
-    </label>
-    <input asp-for="ConfirmPassword"
-           autocomplete="new-password"
-           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white" />
-    <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500 mt-1 block"></span>
+    <div>
+        <label asp-for="ConfirmPassword" class="label">
+            @T["Confirm password"]
+        </label>
+        <input asp-for="ConfirmPassword"
+               type="password"
+               autocomplete="new-password"
+               required
+               class="input" />
+        <span asp-validation-for="ConfirmPassword" class="text-sm text-red-500 mt-1 block"></span>
+    </div>
 </div>
