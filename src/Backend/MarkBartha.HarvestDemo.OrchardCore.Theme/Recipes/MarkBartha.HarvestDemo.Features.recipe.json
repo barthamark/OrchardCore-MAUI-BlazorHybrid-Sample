@@ -1,0 +1,32 @@
+{
+  "name": "MarkBartha.HarvestDemo.Features",
+  "displayName": "Márk Bartha's Harvest Demo - Features",
+  "description": "Features configuration.",
+  "author": "Márk Bartha",
+  "website": "https://markbartha.com",
+  "version": "1.0",
+  "issetuprecipe": false,
+  "categories": [
+    "MarkBartha"
+  ],
+  "tags": [],
+
+  "steps": [
+    {
+      "name": "feature",
+      "enable": [
+        "OrchardCore.AdminMenu",
+        "OrchardCore.AuditTrail",
+        "OrchardCore.Users.CustomUserSettings",
+        "OrchardCore.Users.Registration",
+        "OrchardCore.Contents.Deployment.ExportContentToDeploymentTarget",
+        "MarkBartha.HarvestDemo.OrchardCore.Theme"
+      ]
+    },
+    {
+      "name": "themes",
+      "admin": "TheAdmin",
+      "site": "MarkBartha.HarvestDemo.OrchardCore.Theme"
+    }
+  ]
+}

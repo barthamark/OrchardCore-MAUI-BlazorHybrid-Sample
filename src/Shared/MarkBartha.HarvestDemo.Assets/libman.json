@@ -1,12 +1,13 @@
 {
   "version": "3.0",
-  "defaultProvider": "jsdelivr",
+  "defaultProvider": "unpkg",
   "libraries": [
     {
-      "library": "lucide@0.552.0",
+      "library": "lucide@latest",
       "destination": "wwwroot/vendors/lucide",
       "files": [
-        "dist/cjs/lucide.min.js"
+        "dist/umd/lucide.js",
+        "dist/umd/lucide.min.js"
       ]
     }
   ]

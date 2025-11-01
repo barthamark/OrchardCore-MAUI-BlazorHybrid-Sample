@@ -1,6 +1,108 @@
 /*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 
-body {
-    @apply flex flex-col min-h-screen;
+/* 1) THEME TOKENS (usable as bg-brand, text-brand, ring-brand, etc.) */
+@theme {
+    /* Font */
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+    "Segoe UI Emoji";
+
+    /* Brand palette (tweak as needed) */
+    --color-brand: #e21144;         /* primary brand */
+    --color-brand-600: #c90f3d;     /* hover */
+    --color-brand-700: #a80d34;     /* active */
+
+    /* Neutrals & surfaces */
+    --color-surface-0: #ffffff;
+    --color-surface-1: #f2f3f7;     /* app background */
+    --color-border: #e5e7eb;        /* gray-200-ish */
+    --color-text: #111827;          /* gray-900-ish */
+    --color-text-muted: #6b7280;    /* gray-500-ish */
+
+    /* Radii */
+    --radius-md: .5rem;   /* 8px */
+    --radius-lg: .75rem;  /* 12px */
+    --radius-xl: 1rem;    /* 16px */
+
+    /* Shadows – you’ll still mostly use Tailwind’s shadow utilities */
+}
+
+/* Optional dark mode hook (toggle by adding data-theme="dark" on <html>) */
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+    :root[data-theme="dark"] {
+        color-scheme: dark;
+        --color-surface-0: #0b0c0f;
+        --color-surface-1: #0f1217;
+        --color-text: #e5e7eb;
+        --color-text-muted: #9ca3af;
+        --color-border: #23262d;
+        /* Brand may shift slightly for dark if you want */
+        /* --color-brand: #ff2a5f; */
+    }
+}
+
+/* 2) BASE – make defaults consistent across all hosts */
+@layer base {
+    html { font-family: var(--font-sans); }
+    body { @apply bg-surface-1 text-[color:var(--color-text)] antialiased; }
+    a { @apply text-brand hover:underline; }
+}
+
+/* 3) ACCESSIBILITY/FOCUS helper */
+@layer components {
+    /* Add this class to any interactive elem that should get a nice focus ring */
+    .ring-focus { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 focus-visible:ring-offset-2; }
+}
+
+/* 4) PRIMITIVE COMPONENTS – tiny, reusable, not a full UI kit */
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2
+        rounded-lg font-medium transition-[background,box-shadow,transform]
+        active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed
+        ring-focus px-4 py-2;
+    }
+    .btn-primary { @apply text-white bg-brand hover:bg-[color:var(--color-brand-600)]; }
+    .btn-ghost   { @apply text-[color:var(--color-text)] hover:bg-gray-100; }
+    .btn-danger  { @apply text-white bg-red-600 hover:bg-red-700; }
+
+    /* Icon-only buttons (hamburger/close/etc.) */
+    .btn-icon { @apply inline-flex items-center justify-center rounded-lg p-2 hover:bg-gray-100 ring-focus; }
+
+    /* Floating action button for mobile */
+    .fab { @apply fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg hover:shadow-xl
+    active:scale-95 inline-flex items-center justify-center text-white bg-brand disabled:opacity-50; }
+
+    /* Inputs */
+    .label { @apply block text-sm font-medium text-[color:var(--color-text)] mb-2; }
+    .input {
+        @apply w-full px-4 py-3 rounded-lg border border-[color:var(--color-border)]
+        bg-surface-0 outline-none transition-colors focus:border-gray-400;
+    }
+
+    /* Cards / panels */
+    .card { @apply bg-surface-0 rounded-2xl shadow-sm p-6; }
+
+    /* Menu / drawer panel + backdrop */
+    .menu-panel { @apply fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-surface-0 z-50 shadow-2xl transform transition-transform; }
+    .backdrop   { @apply fixed inset-0 bg-black/50 z-40; }
+
+    /* Chips/Badges (lightweight) */
+    .chip { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700; }
+
+    /* Circular checkbox used in your todos */
+    .checkbox-circle { @apply w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all; }
+    .checkbox-circle--checked { @apply border-brand bg-brand text-white; }
+}
+
+/* 5) TINY LAYOUT HELPERS – optional ergonomics */
+@layer utilities {
+    .content-container { @apply max-w-4xl mx-auto px-6; }
+    .page-padding     { @apply px-6 py-6; }
+    .page-header      { @apply bg-surface-0 px-6 py-4 flex items-center justify-between shadow-sm; }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "MarkBartha.HarvestDemo.Setup",
+  "displayName": "Márk Bartha's Harvest Demo Setup",
+  "description": "Setup recipe for the Orchard Harvest 2025 demo app by Márk Bartha.",
+  "author": "Márk Bartha",
+  "website": "https://markbartha.com",
+  "version": "1.0",
+  "issetuprecipe": true,
+  "categories": [ "MarkBartha" ],
+  "tags": [],
+
+  "steps": [
+    {
+      "name": "recipes",
+      "Values": [
+        {
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
+          "name": "Headless"
+        },
+        {
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
+          "name": "MarkBartha.HarvestDemo.Features"
+        },
+        {
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
+          "name": "MarkBartha.HarvestDemo.Export"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+<!--Sign In-->
+
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <!-- Back -->
+        <a href="/" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 btn-ghost p-0">
+            <i class="icon-arrow-left" aria-hidden="true"></i>
+            <span class="font-medium">Back to Tasks</span>
+        </a>
+
+        <!-- Brand -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+                <i class="icon-check-circle" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Welcome back</h1>
+            <p class="text-[color:var(--color-text-muted)]">Sign in to your account to continue</p>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+            <form action="/signin" method="post" class="space-y-5">
+                <!-- @Html.AntiForgeryToken() -->
+
+                <div>
+                    <label for="email" class="label">Email</label>
+                    <input id="email" name="email" type="email" autocomplete="username" required class="input" placeholder="you@example.com" />
+                </div>
+
+                <div>
+                    <label for="password" class="label">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required class="input" placeholder="••••••••" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <label class="inline-flex items-center gap-2 text-sm">
+                        <input type="checkbox" name="rememberMe" class="h-4 w-4 rounded border-[color:var(--color-border)]" />
+                        <span>Remember me</span>
+                    </label>
+                    <a href="/forgot-password" class="text-sm font-medium text-brand hover:underline">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Sign In</button>
+            </form>
+        </div>
+
+        <p class="text-center mt-6 text-[color:var(--color-text-muted)]">
+            Don’t have an account?
+            <a href="/signup" class="font-medium text-brand hover:underline">Sign up</a>
+        </p>
+    </div>
+</main>
+
+<!--Sign Up-->
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <a href="/signin" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 btn-ghost p-0">
+            <i class="icon-arrow-left" aria-hidden="true"></i>
+            <span class="font-medium">Back to Sign In</span>
+        </a>
+
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+                <i class="icon-check-circle" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Create account</h1>
+            <p class="text-[color:var(--color-text-muted)]">Sign up to get started</p>
+        </div>
+
+        <div class="card">
+            <form action="/signup" method="post" class="space-y-5">
+                <!-- @Html.AntiForgeryToken() -->
+
+                <div>
+                    <label for="name" class="label">Full Name</label>
+                    <input id="name" name="name" type="text" required class="input" placeholder="John Doe" />
+                </div>
+
+                <div>
+                    <label for="email" class="label">Email</label>
+                    <input id="email" name="email" type="email" autocomplete="username" required class="input" placeholder="you@example.com" />
+                </div>
+
+                <div>
+                    <label for="password" class="label">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required class="input" placeholder="••••••••" />
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="label">Confirm Password</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required class="input" placeholder="••••••••" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Sign Up</button>
+            </form>
+        </div>
+
+        <p class="text-center mt-6 text-[color:var(--color-text-muted)]">
+            Already have an account?
+            <a href="/signin" class="font-medium text-brand hover:underline">Sign in</a>
+        </p>
+    </div>
+</main>
+
+<!--Forgot Password-->
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <a href="/signin" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 btn-ghost p-0">
+            <i class="icon-arrow-left" aria-hidden="true"></i>
+            <span class="font-medium">Back to Sign In</span>
+        </a>
+
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+                <i class="icon-check-circle" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Forgot password?</h1>
+            <p class="text-[color:var(--color-text-muted)]">Enter your email to reset your password</p>
+        </div>
+
+        <div class="card">
+            <form action="/forgot-password" method="post" class="space-y-5">
+                <!-- @Html.AntiForgeryToken() -->
+
+                <div>
+                    <label for="email" class="label">Email</label>
+                    <input id="email" name="email" type="email" autocomplete="username" required class="input" placeholder="you@example.com" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Send Reset Link</button>
+            </form>
+        </div>
+
+        <p class="text-center mt-6 text-[color:var(--color-text-muted)]">
+            Remember your password?
+            <a href="/signin" class="font-medium text-brand hover:underline">Sign in</a>
+        </p>
+    </div>
+</main>
+
+<!--Forgot Password – Confirmation-->
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand/10">
+                <i class="icon-check-circle text-brand" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Check your email</h1>
+            <p class="text-[color:var(--color-text-muted)]">We’ve sent password reset instructions to your email</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand/10">
+                <i class="icon-check-circle text-brand" aria-hidden="true"></i>
+            </div>
+            <p class="mb-6">
+                We’ve sent password reset instructions to
+                <span class="font-medium">{{ email }}</span>
+            </p>
+            <p class="text-sm text-[color:var(--color-text-muted)] mb-6">
+                If you don’t see the email, check your spam folder.
+            </p>
+            <a href="/signin" class="btn btn-primary">Back to Sign In</a>
+        </div>
+
+        <p class="text-center mt-6 text-[color:var(--color-text-muted)]">
+            Didn’t receive the email?
+            <a href="/forgot-password" class="font-medium text-brand hover:underline">Resend</a>
+        </p>
+    </div>
+</main>
+
+<!--Reset Password-->
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <a href="/signin" class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 btn-ghost p-0">
+            <i class="icon-arrow-left" aria-hidden="true"></i>
+            <span class="font-medium">Back to Sign In</span>
+        </a>
+
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+                <i class="icon-check-circle" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Reset password</h1>
+            <p class="text-[color:var(--color-text-muted)]">Enter your new password</p>
+        </div>
+
+        <div class="card">
+            <form action="/reset-password" method="post" class="space-y-5">
+                <!-- @Html.AntiForgeryToken() -->
+
+                <div>
+                    <label for="password" class="label">New Password</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required class="input" placeholder="••••••••" />
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="label">Confirm New Password</label>
+                    <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required class="input" placeholder="••••••••" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full">Reset Password</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!--Reset Password – Success-->
+<main class="min-h-screen flex items-center justify-center px-6 bg-surface-1">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+                <i class="icon-check-circle" aria-hidden="true"></i>
+            </div>
+            <h1 class="text-3xl font-bold">Password reset successful</h1>
+            <p class="text-[color:var(--color-text-muted)]">Your password has been successfully reset</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand/10">
+                <i class="icon-check-circle text-brand" aria-hidden="true"></i>
+            </div>
+            <p class="mb-6">You can now sign in with your new password</p>
+            <a href="/signin" class="btn btn-primary">Sign In</a>
+        </div>
+    </div>
+</main>

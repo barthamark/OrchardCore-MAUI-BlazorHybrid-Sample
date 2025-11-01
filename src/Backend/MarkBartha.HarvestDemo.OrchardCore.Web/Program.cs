@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLogHost();
 
-builder.Services.AddOrchardCms();
+builder.Services.AddOrchardCms(orchardCoreBuilder => { orchardCoreBuilder.AddSetupFeatures("OrchardCore.AutoSetup"); });
 
 var app = builder.Build();
 

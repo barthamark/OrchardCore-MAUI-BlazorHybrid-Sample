@@ -1,0 +1,347 @@
+{
+  "name": "MarkBartha.HarvestDemo.Export",
+  "displayName": "Márk Bartha's Harvest Demo - Export",
+  "description": "Contents and configuration to transfer between development and production environments.",
+  "author": "Márk Bartha",
+  "website": "https://markbartha.com",
+  "version": "1.0",
+  "issetuprecipe": false,
+  "categories": [
+    "MarkBartha"
+  ],
+  "tags": [],
+
+  "steps": [
+    {
+      "name": "AdminMenu",
+      "data": []
+    },
+    {
+      "name": "Roles",
+      "Roles": [
+        {
+          "Name": "Administrator",
+          "Description": "A system role that grants all permissions to the assigned users.",
+          "Permissions": []
+        },
+        {
+          "Name": "Moderator",
+          "Description": "Grants users the ability to moderate content.",
+          "Permissions": [
+            "AccessAdminPanel",
+            "ManageOwnUserInformation"
+          ]
+        },
+        {
+          "Name": "Editor",
+          "Description": "Grants users the ability to edit existing content.",
+          "Permissions": [
+            "AccessAdminPanel",
+            "PublishContent",
+            "EditContent",
+            "DeleteContent",
+            "PreviewContent",
+            "CloneContent",
+            "ListContent",
+            "ManageOwnUserInformation",
+            "ManageMediaContent",
+            "ManageOwnMediaContent",
+            "ManageQueries",
+            "ManageAdminMenu"
+          ]
+        },
+        {
+          "Name": "Author",
+          "Description": "Grants users the ability to create content.",
+          "Permissions": [
+            "AccessAdminPanel",
+            "PublishOwnContent",
+            "EditOwnContent",
+            "DeleteOwnContent",
+            "PreviewOwnContent",
+            "CloneOwnContent",
+            "ManageOwnUserInformation",
+            "ManageOwnMediaContent"
+          ]
+        },
+        {
+          "Name": "Contributor",
+          "Description": "Grants users the ability to contribute content.",
+          "Permissions": [
+            "AccessAdminPanel",
+            "EditOwnContent",
+            "PreviewOwnContent",
+            "CloneOwnContent",
+            "ManageOwnUserInformation",
+            "ManageOwnMediaContent"
+          ]
+        },
+        {
+          "Name": "Authenticated",
+          "Description": "A system role representing all authenticated users.",
+          "Permissions": [
+            "ViewContent",
+            "ExecuteGraphQL",
+            "ExecuteApiAll"
+          ]
+        },
+        {
+          "Name": "Anonymous",
+          "Description": "A system role representing all non-authenticated users.",
+          "Permissions": [
+            "ViewContent"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "AuditTrailSettings": {
+        "Categories": [],
+        "ClientIpAddressAllowed": false
+      },
+      "AuditTrailTrimmingSettings": {
+        "RetentionDays": 10,
+        "Disabled": false
+      },
+      "ContentAuditTrailSettings": {
+        "AllowedContentTypes": []
+      },
+      "LoginSettings": {
+        "UseSiteTheme": false,
+        "UseExternalProviderIfOnlyOneDefined": false,
+        "DisableLocalLogin": false,
+        "UseScriptToSyncRoles": false,
+        "AllowChangingUsername": false,
+        "AllowChangingEmail": false,
+        "AllowChangingPhoneNumber": true
+      },
+      "RegistrationSettings": {
+        "UsersCanRegister": "NoRegistration",
+        "UsersMustValidateEmail": false,
+        "UsersAreModerated": false,
+        "UseSiteTheme": false,
+        "NoPasswordForExternalUsers": false,
+        "NoUsernameForExternalUsers": false,
+        "NoEmailForExternalUsers": false,
+        "UseScriptToGenerateUsername": false
+      }
+    },
+    {
+      "name": "ContentDefinition",
+      "ContentTypes": [
+        {
+          "Name": "ToDo",
+          "DisplayName": "To Do",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": true,
+              "Versionable": true,
+              "Securable": true
+            }
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "ToDo",
+              "Name": "ToDo",
+              "Settings": {}
+            },
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {}
+            }
+          ]
+        },
+        {
+          "Name": "UserProfile",
+          "DisplayName": "User Profile",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": false,
+              "Listable": false,
+              "Draftable": false,
+              "Versionable": false,
+              "Stereotype": "CustomUserSettings",
+              "Securable": false
+            },
+            "FullTextAspectSettings": {
+              "IncludeFullTextTemplate": false,
+              "IncludeBodyAspect": true,
+              "IncludeDisplayText": true
+            },
+            "GraphQLContentTypeSettings": {
+              "Hidden": false
+            }
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "UserProfile",
+              "Name": "UserProfile",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "0"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "ContentParts": [
+        {
+          "Name": "ToDo",
+          "Settings": {},
+          "ContentPartFieldDefinitionRecords": [
+            {
+              "FieldName": "BooleanField",
+              "Name": "Done",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "Done",
+                  "Editor": "Switch"
+                },
+                "BooleanFieldSettings": {
+                  "DefaultValue": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "Name": "UserProfile",
+          "Settings": {},
+          "ContentPartFieldDefinitionRecords": [
+            {
+              "FieldName": "TextField",
+              "Name": "FirstName",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "First Name",
+                  "Position": "0"
+                }
+              }
+            },
+            {
+              "FieldName": "TextField",
+              "Name": "LastName",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "Last Name",
+                  "Position": "1"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "deployment",
+      "Plans": [
+        {
+          "Name": "Export content to deployment plan target",
+          "Steps": [
+            {
+              "Type": "ExportContentToDeploymentTargetDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Contents.Deployment.ExportContentToDeploymentTarget.ExportContentToDeploymentTargetDeploymentStep, OrchardCore.Contents",
+                "Id": "4we024z3g8dgx03mc2r9sw3s43",
+                "Name": "ExportContentToDeploymentTargetDeploymentStep"
+              }
+            }
+          ]
+        },
+        {
+          "Name": "Export",
+          "Steps": [
+            {
+              "Type": "AdminMenuDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.AdminMenu.Deployment.AdminMenuDeploymentStep, OrchardCore.AdminMenu",
+                "Id": "d239ab40fc5146e9a03b6bb42158b12f",
+                "Name": "AdminMenu"
+              }
+            },
+            {
+              "Type": "AllRolesDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Roles.Deployment.AllRolesDeploymentStep, OrchardCore.Roles",
+                "Id": "a5d3adcf65dd4c57ade35a0114f36ab3",
+                "Name": "AllRoles"
+              }
+            },
+            {
+              "Type": "AuditTrailSettings_SiteSettingsPropertyDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.AuditTrail.Settings.AuditTrailSettings, OrchardCore.AuditTrail]], OrchardCore.Settings.Core",
+                "Id": "8178ceb958ed4689a8685a8bee1b6354",
+                "Name": "AuditTrailSettings_SiteSettingsPropertyDeploymentStep"
+              }
+            },
+            {
+              "Type": "AuditTrailTrimmingSettings_SiteSettingsPropertyDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.AuditTrail.Settings.AuditTrailTrimmingSettings, OrchardCore.AuditTrail]], OrchardCore.Settings.Core",
+                "Id": "9263dfa7f1f24f809283abaa3fc34ddd",
+                "Name": "AuditTrailTrimmingSettings_SiteSettingsPropertyDeploymentStep"
+              }
+            },
+            {
+              "Type": "ContentAuditTrailSettings_SiteSettingsPropertyDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.Contents.AuditTrail.Settings.ContentAuditTrailSettings, OrchardCore.Contents]], OrchardCore.Settings.Core",
+                "Id": "dd07afa9cf3c47369a5c8efcac9a220e",
+                "Name": "ContentAuditTrailSettings_SiteSettingsPropertyDeploymentStep"
+              }
+            },
+            {
+              "Type": "ContentDefinitionDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.ContentTypes.Deployment.ContentDefinitionDeploymentStep, OrchardCore.ContentTypes",
+                "IncludeAll": false,
+                "ContentTypes": [
+                  "ToDo",
+                  "UserProfile"
+                ],
+                "ContentParts": [
+                  "ToDo",
+                  "UserProfile"
+                ],
+                "Id": "286781a60409412594937ce2ac2b424b",
+                "Name": "ContentDefinition"
+              }
+            },
+            {
+              "Type": "DeploymentPlanDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Deployment.Deployment.DeploymentPlanDeploymentStep, OrchardCore.Deployment",
+                "IncludeAll": true,
+                "DeploymentPlanNames": [],
+                "Id": "36e15a9f229e4c58af26b674a89c62cf",
+                "Name": "DeploymentPlan"
+              }
+            },
+            {
+              "Type": "LoginSettings_SiteSettingsPropertyDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.Users.Models.LoginSettings, OrchardCore.Users.Core]], OrchardCore.Settings.Core",
+                "Id": "78bc3cf389c84c7d9b4ca0af768ba516",
+                "Name": "LoginSettings_SiteSettingsPropertyDeploymentStep"
+              }
+            },
+            {
+              "Type": "RegistrationSettings_SiteSettingsPropertyDeploymentStep",
+              "Step": {
+                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.Users.Models.RegistrationSettings, OrchardCore.Users]], OrchardCore.Settings.Core",
+                "Id": "e1ef49a98dcf49a49aeb289511db6d33",
+                "Name": "RegistrationSettings_SiteSettingsPropertyDeploymentStep"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OrchardCore.Users
+@using OrchardCore.Users.Models
+
+@inject SignInManager<IUser> SignInManager
+
+@{
+    var loginProviders = await SignInManager.GetExternalAuthenticationSchemesAsync();
+    var disableLocalLogin = Site.As<LoginSettings>().DisableLocalLogin;
+    var hasExternalProviders = loginProviders.Any();
+}
+
+<div class="space-y-10">
+    @if (!ViewContext.ModelState.IsValid)
+    {
+        <div class="text-red-500 text-sm">
+            <div asp-validation-summary="ModelOnly"></div>
+        </div>
+    }
+
+    @if (!disableLocalLogin)
+    {
+        <div>
+            <h1 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4">@T["Log in"]</h1>
+            @await DisplayAsync(Model)
+        </div>
+    }
+
+    @if (hasExternalProviders)
+    {
+        <div>
+            <h1 class="text-2xl font-semibold text-primary-700 dark:text-primary-300 mb-4">@T["Use another service to log in"]</h1>
+            <form asp-controller="ExternalAuthentications" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="space-y-3">
+                @foreach (var provider in loginProviders)
+                {
+                    <button
+                        type="submit"
+                        class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out"
+                        name="provider"
+                        value="@provider.Name"
+                        title="@T["Log in using your {0} account", provider.DisplayName]">
+                        @provider.DisplayName
+                    </button>
+                }
+            </form>
+        </div>
+    }
+</div>

@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		AGENTS.md = AGENTS.md
 		.gitignore = .gitignore
+		Reset-Local.ps1 = Reset-Local.ps1
 	EndProjectSection
 EndProject
 Global

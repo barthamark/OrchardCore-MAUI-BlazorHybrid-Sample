@@ -12,14 +12,23 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="OrchardCore.OpenId" Version="2.2.1" />
+        <PackageReference Include="OrchardCore.OpenId.Core" Version="2.2.1" />
         <PackageReference Include="OrchardCore.Theme.Targets" Version="2.2.1"/>
         <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1"/>
         <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1"/>
         <PackageReference Include="OrchardCore.ResourceManagement" Version="2.2.1"/>
+        <PackageReference Include="OrchardCore.Users" Version="2.2.1"/>
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="wwwroot\" />
+      <Folder Include="wwwroot\vendors\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Views\LoginFormCredentials.cshtml" />
+      <Content Include="Views\_ViewImports.cshtml" />
     </ItemGroup>
 
     <Import Project="$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />

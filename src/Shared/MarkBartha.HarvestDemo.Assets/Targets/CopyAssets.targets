@@ -6,6 +6,10 @@
     <LocalAssetsFolder>$(ProjectDir)Assets\</LocalAssetsFolder>
     <AssetsDestinationFolder>$(ProjectDir)wwwroot\</AssetsDestinationFolder>
     <SharedPublishedAssetsDestinationFolder>$(AssetsDestinationFolder)</SharedPublishedAssetsDestinationFolder>
+    <SharedAssetsLibManRestoreWorkDir>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\</SharedAssetsLibManRestoreWorkDir>
+    <SharedAssetsLibManJson>$(SharedAssetsLibManRestoreWorkDir)libman.json</SharedAssetsLibManJson>
+    <SharedAssetsLibManRestoreStamp>$(SharedAssetsLibManRestoreWorkDir)obj\libman.restore.stamp</SharedAssetsLibManRestoreStamp>
+    <SharedAssetsLibManRestoreCommand>dotnet tool run libman restore</SharedAssetsLibManRestoreCommand>
 
     <AssetsIncludePattern>**\*</AssetsIncludePattern>
     <AssetsExcludePattern>css\**\*</AssetsExcludePattern>
@@ -16,7 +20,21 @@
     <AutoCopyFailOnError>true</AutoCopyFailOnError>
   </PropertyGroup>
 
-  <Target Name="AutoCopyAssets" BeforeTargets="EmbeddModuleAssets;OrchardCoreEmbedModuleAssets;Compile">
+  <Target Name="RestoreSharedLibManAssets"
+          Condition="Exists('$(SharedAssetsLibManJson)')"
+          Inputs="$(SharedAssetsLibManJson)"
+          Outputs="$(SharedAssetsLibManRestoreStamp)">
+    <Message Text="Restoring LibMan packages for shared assets from: $(SharedAssetsLibManRestoreWorkDir)" Importance="high" />
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(SharedAssetsLibManRestoreStamp)'))" />
+    <Exec Command="$(SharedAssetsLibManRestoreCommand)" WorkingDirectory="$(SharedAssetsLibManRestoreWorkDir)" />
+    <WriteLinesToFile File="$(SharedAssetsLibManRestoreStamp)"
+                      Lines="$([System.DateTime]::UtcNow.ToString('O'))"
+                      Overwrite="true" />
+  </Target>
+
+  <Target Name="AutoCopyAssets"
+          DependsOnTargets="RestoreSharedLibManAssets"
+          BeforeTargets="EmbeddModuleAssets;OrchardCoreEmbedModuleAssets;Compile">
     <Message Text="Copying assets in project: $(MSBuildProjectName)" Importance="high" />
 
     <ItemGroup>

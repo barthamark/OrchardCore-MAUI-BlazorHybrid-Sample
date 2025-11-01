@@ -1,0 +1,28 @@
+﻿<div class="max-w-md mx-auto space-y-6">
+    <div>
+        <h2 class="text-2xl font-semibold text-primary-700 dark:text-primary-300">@T["Register a new account"]</h2>
+        <hr class="border-gray-200 dark:border-gray-700 mt-2" />
+    </div>
+
+    <form asp-action="Register"
+          asp-route-returnurl="@ViewData["ReturnUrl"]"
+          method="post"
+          class="space-y-6 no-multisubmit">
+
+        <div class="text-red-500 text-sm">
+            <div asp-validation-summary="All"></div>
+        </div>
+
+        @if (Model.Content != null)
+        {
+            @await DisplayAsync(Model.Content)
+        }
+
+        <div>
+            <button type="submit"
+                    class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150">
+                @T["Register"]
+            </button>
+        </div>
+    </form>
+</div>
