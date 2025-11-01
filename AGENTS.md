@@ -15,10 +15,20 @@ The solution `MarkBartha.HarvestDemo.sln` groups the Orchard CMS host, theme, an
 Use the default .NET style: four-space indents, braces on new lines, PascalCase for types and methods, and camelCase for locals. Keep asynchronous APIs suffixed with `Async`, and prefer Orchard Core shape names that mirror their Razor file paths. Run `dotnet format` before submitting to keep nullable-enabled code clean and consistent.
 
 ## Asset Pipeline Notes
-Theme builds call `CopyAssets.targets` and `RunTailwindBuild.targets`, so place raw CSS in `Assets/css` and shared styles in `src/Shared/.../Assets`. Shared libraries from `src/Shared/.../wwwroot` (e.g., `vendors/lucide/dist/cjs/lucide.min.js`) are copied by the same target into each consumer’s `wwwroot/`; override `SharedPublishedAssetsDestinationFolder` if a project needs a different static root (the future MAUI app will point this at its hybrid `wwwroot`). If a change touches Tailwind configuration, run `dotnet tailwind exec -i ./Assets/css/app.css -o ./wwwroot/css/app.css` manually to verify the output. Do not edit files under `wwwroot/` directly; treat them as generated artifacts.
+Theme builds call `CopyAssets.targets` and `RunTailwindBuild.targets`, so place raw CSS in `Assets/css` and shared styles in `src/Shared/.../Assets`. Shared libraries from `src/Shared/.../wwwroot` (e.g., `vendors/lucide/dist/cjs/lucide.min.js`) are copied by the same target into each consumer's `wwwroot/`; override `SharedPublishedAssetsDestinationFolder` if a project needs a different static root (the future MAUI app will point this at its hybrid `wwwroot`). If a change touches Tailwind configuration, run `dotnet tailwind exec -i ./Assets/css/app.css -o ./wwwroot/css/app.css` manually to verify the output. Do not edit files under `wwwroot/` directly; treat them as generated artifacts.
+
+- `Targets/CopyAssets.targets` now depends on a `RestoreSharedLibManAssets` target that runs `dotnet tool run libman restore` once per build (tracked by `obj/libman.restore.stamp`). If a build fails because vendor assets are stale, confirm LibMan output instead of bypassing the target.
 
 ## Testing Guidelines
 No automated test project ships yet; new features should include focused unit or integration tests alongside the feature. Prefer xUnit and locate future test projects under `tests/` matching the project under test (for example, `tests/MarkBartha.HarvestDemo.OrchardCore.Web.Tests`). Until the harness lands, document manual validation steps in the PR and attach relevant Orchard recipes to seed data when needed.
 
 ## Commit & Pull Request Guidelines
 Write commit subjects in the imperative mood (e.g., `Add tenant setup recipe`), and keep the first line under 72 characters. Each pull request should link to its issue, describe user-visible changes, and include screenshots or screencasts for UI updates. Confirm `dotnet build`, `dotnet tailwind exec`, and local Orchard startup succeed before requesting review, and mention any follow-up work in the PR notes.
+
+## Theme & Auth UI Notes (2025-11-01)
+- Account-related shapes live under `src/Backend/MarkBartha.HarvestDemo.OrchardCore.Theme/Views`. They were refactored to follow the `Temp/account-pages.html` layout: hero badge, Tailwind card, and supporting copy. Keep Razor logic intact—only adjust markup/classes inside each shape.
+- Lucide icons are rendered via `<i data-lucide="...">`. Avoid legacy `icon-*` classes. For colored variants, use Tailwind color utilities (e.g., `text-brand`) on the wrapping element.
+- Buttons rely on `.btn` utilities from `common.css`; anchors acting as buttons should carry `btn` to pick up pointer/underline behavior. `.btn-icon` is also defined there and must remain hover-transparent.
+- Password fields include toggle buttons driven by the global `initPasswordToggles` helper (defined inline where needed). To add a new toggle, set `data-password-toggle`, `data-password-icon` attributes, and include the shared init script if not already present on the page.
+- “Remember me” checkboxes should be wrapped in a single label with `inline-flex` so clicking the label toggles the input.
+- Success/confirmation cards intentionally omit inner icons—only the hero badge uses a decorative icon with a soft brand background. Match existing patterns when introducing new screens.
