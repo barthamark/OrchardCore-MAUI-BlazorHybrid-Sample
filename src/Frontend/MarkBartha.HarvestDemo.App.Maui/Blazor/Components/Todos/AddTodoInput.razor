@@ -22,7 +22,7 @@
         }
     </div>
 
-    @if (!IsInline)
+    @if (!IsInline && OnCancel.HasDelegate)
     {
         <div class="flex gap-2 mt-4">
             <button type="button"
@@ -50,8 +50,8 @@
     [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
     [Parameter] public bool IsInline { get; set; }
 
-    private string ContainerClasses => IsInline ? "p-4 flex gap-3" : "p-4 space-y-4";
-    private string InputWrapperClass => IsInline ? "flex gap-3 items-center" : string.Empty;
+    private string ContainerClasses => IsInline ? "p-4 flex gap-3 items-center" : "p-4 space-y-4";
+    private string InputWrapperClass => IsInline ? "flex gap-3 items-center w-full" : string.Empty;
 
     public async Task FocusAsync()
     {

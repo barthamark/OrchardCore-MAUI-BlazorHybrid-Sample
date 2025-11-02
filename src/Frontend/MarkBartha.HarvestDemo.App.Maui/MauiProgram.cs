@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Duende.IdentityModel.OidcClient;
 using MarkBartha.HarvestDemo.App.Maui.Services;
+using MarkBartha.HarvestDemo.App.Maui.Services.Todos;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
@@ -50,6 +51,14 @@ public static class MauiProgram
         });
 
         builder.Services.AddSingleton<AppState>();
+        builder.Services.AddSingleton<ITodoService, InMemoryTodoService>();
+        builder.Services.AddHttpClient<TodoApiService>(client =>
+        {
+            client.BaseAddress = new Uri(AppConfig.ApiBaseUrl);
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+        });
+        builder.Services.AddScoped<TodoState>();
 
         return builder.Build();
     }

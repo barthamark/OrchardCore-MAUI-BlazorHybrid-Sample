@@ -25,11 +25,11 @@
 </article>
 
 @code {
-    [Parameter] public int Id { get; set; }
+    [Parameter] public Guid Id { get; set; }
     [Parameter] public string Title { get; set; } = string.Empty;
     [Parameter] public bool IsCompleted { get; set; }
-    [Parameter] public EventCallback<int> Toggle { get; set; }
-    [Parameter] public EventCallback<int> Delete { get; set; }
+    [Parameter] public EventCallback<Guid> Toggle { get; set; }
+    [Parameter] public EventCallback<Guid> Delete { get; set; }
 
     private string CheckboxClass => IsCompleted
         ? "checkbox-circle checkbox-circle--checked"

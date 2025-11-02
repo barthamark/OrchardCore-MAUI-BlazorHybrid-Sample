@@ -1,8 +1,15 @@
 @page "/"
 @attribute [Authorize]
+@implements IAsyncDisposable
 @inject AppState AppState
+@inject TodoState TodoState
 
 <PageTitle>Tasks</PageTitle>
+
+@{
+    var todos = TodoState.Items;
+    var isLoading = TodoState.IsLoading;
+}
 
 <main class="content-container page-padding pb-32 md:pb-6 flex-1">
     <div class="max-w-5xl mx-auto w-full space-y-6">
@@ -10,8 +17,8 @@
             <AddTodoInput IsInline="true"
                           Value="@newTodoText"
                           ValueChanged="HandleDesktopValueChanged"
-                          OnSubmit="AddTodoFromDesktop"
-                          OnKeyDown="HandleDesktopKeyDown"
+                          OnSubmit="AddTodoFromDesktopAsync"
+                          OnKeyDown="HandleDesktopKeyDownAsync"
                           @ref="desktopAddRef" />
         </section>
 
@@ -19,15 +26,22 @@
             <AddTodoInput IsInline="false"
                           Value="@newTodoMobileText"
                           ValueChanged="HandleMobileValueChanged"
-                          OnSubmit="AddTodoFromMobile"
+                          OnSubmit="AddTodoFromMobileAsync"
                           OnCancel="CancelMobileAdd"
-                          OnKeyDown="HandleMobileKeyDown"
+                          OnKeyDown="HandleMobileKeyDownAsync"
                           @ref="mobileAddRef" />
         </section>
 
-        <TodoList Items="todoView" Toggle="ToggleTodo" Delete="DeleteTodo" />
+        @if (isLoading)
+        {
+            <div class="flex justify-center py-12 text-sm text-[color:var(--color-text-muted)]">
+                Loading tasks...
+            </div>
+        }
 
-        <section class="text-center py-12 @(todoView.Count == 0 ? string.Empty : "hidden")" data-state="empty">
+        <TodoList Items="todos" Toggle="ToggleTodoAsync" Delete="DeleteTodoAsync" />
+
+        <section class="text-center py-12 @((!isLoading && todos.Count == 0) ? string.Empty : "hidden")" data-state="empty">
             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand text-white">
                 <i class="icon-check text-xl" aria-hidden="true"></i>
             </div>
@@ -36,19 +50,10 @@
     </div>
 </main>
 
-<FloatingActionButton Hidden="isAddingMobile" OnClick="StartMobileAdd" />
+<FloatingActionButton Hidden="@isAddingMobile" OnClick="StartMobileAddAsync" />
 
 @code {
-    private readonly List<TodoItem> todos =
-    [
-        new TodoItem(1, "Design new landing page", false),
-        new TodoItem(2, "Update documentation", true),
-        new TodoItem(3, "Plan onboarding session", false),
-    ];
-
-    private readonly List<TodoList.TodoItemModel> todoView = new();
-
-    private int nextId = 4;
+    private CancellationTokenSource? _cts;
     private string newTodoText = string.Empty;
     private string newTodoMobileText = string.Empty;
     private bool isAddingMobile;
@@ -56,79 +61,78 @@
     private AddTodoInput? desktopAddRef;
     private AddTodoInput? mobileAddRef;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (AppState.UserProfile is null)
+        EnsureUserProfile();
+
+        _cts = new CancellationTokenSource();
+        TodoState.StateChanged += HandleTodoStateChanged;
+        await TodoState.InitializeAsync(_cts.Token);
+    }
+
+    private void EnsureUserProfile()
+    {
+        if (AppState.UserProfile is not null)
         {
-            AppState.SetUserProfile(new UserProfile
-            {
-                UserId = Guid.NewGuid().ToString("N"),
-                UserName = "John Doe",
-                Email = "john@example.com",
-            });
+            return;
         }
 
-        SyncView();
+        AppState.SetUserProfile(new UserProfile
+        {
+            UserId = Guid.NewGuid().ToString("N"),
+            UserName = "Harvest Demo",
+            Email = "orchard.harvest@example.com",
+        });
     }
+
+    private void HandleTodoStateChanged() => InvokeAsync(StateHasChanged);
 
     private void HandleDesktopValueChanged(string? value) => newTodoText = value ?? string.Empty;
     private void HandleMobileValueChanged(string? value) => newTodoMobileText = value ?? string.Empty;
 
-    private void AddTodoFromDesktop()
+    private async Task AddTodoFromDesktopAsync()
     {
-        if (TryAddTodo(newTodoText))
+        if (await TryAddTodoAsync(newTodoText))
         {
             newTodoText = string.Empty;
         }
     }
 
-    private void AddTodoFromMobile()
+    private async Task AddTodoFromMobileAsync()
     {
-        if (TryAddTodo(newTodoMobileText))
+        if (await TryAddTodoAsync(newTodoMobileText))
         {
             newTodoMobileText = string.Empty;
             isAddingMobile = false;
         }
     }
 
-    private bool TryAddTodo(string? value)
+    private async Task<bool> TryAddTodoAsync(string? value)
     {
         var trimmed = value?.Trim();
-        if (string.IsNullOrEmpty(trimmed))
+        if (string.IsNullOrWhiteSpace(trimmed))
         {
             return false;
         }
 
-        todos.Insert(0, new TodoItem(nextId++, trimmed, false));
-        SyncView();
+        var token = _cts?.Token ?? CancellationToken.None;
+        await TodoState.AddAsync(trimmed, token);
         return true;
     }
 
-    private void ToggleTodo(int id)
+    private Task ToggleTodoAsync(Guid id)
     {
-        var todo = todos.FirstOrDefault(t => t.Id == id);
-        if (todo is null)
-        {
-            return;
-        }
-
-        todo.IsCompleted = !todo.IsCompleted;
-        SyncView();
+        var token = _cts?.Token ?? CancellationToken.None;
+        return TodoState.ToggleAsync(id, token);
     }
 
-    private void DeleteTodo(int id)
+    private Task DeleteTodoAsync(Guid id)
     {
-        var todo = todos.FirstOrDefault(t => t.Id == id);
-        if (todo is null)
-        {
-            return;
-        }
-
-        todos.Remove(todo);
-        SyncView();
+        var token = _cts?.Token ?? CancellationToken.None;
+        return TodoState.DeleteAsync(id, token);
     }
 
-    private async Task StartMobileAdd()
+    private async Task StartMobileAddAsync()
     {
         isAddingMobile = true;
         newTodoMobileText = string.Empty;
@@ -146,39 +150,31 @@
         isAddingMobile = false;
     }
 
-    private void HandleDesktopKeyDown(KeyboardEventArgs args)
+    private async Task HandleDesktopKeyDownAsync(KeyboardEventArgs args)
     {
         if (args.Key == "Enter")
         {
-            AddTodoFromDesktop();
+            await AddTodoFromDesktopAsync();
         }
     }
 
-    private void HandleMobileKeyDown(KeyboardEventArgs args)
+    private async Task HandleMobileKeyDownAsync(KeyboardEventArgs args)
     {
         if (args.Key == "Enter")
         {
-            AddTodoFromMobile();
+            await AddTodoFromMobileAsync();
         }
     }
 
-    private void SyncView()
+    public ValueTask DisposeAsync()
     {
-        todoView.Clear();
-        todoView.AddRange(todos.Select(t => new TodoList.TodoItemModel(t.Id, t.Title, t.IsCompleted)));
-    }
-
-    private class TodoItem
-    {
-        public TodoItem(int id, string title, bool isCompleted)
+        TodoState.StateChanged -= HandleTodoStateChanged;
+        if (_cts is not null)
         {
-            Id = id;
-            Title = title;
-            IsCompleted = isCompleted;
+            _cts.Cancel();
+            _cts.Dispose();
         }
 
-        public int Id { get; }
-        public string Title { get; }
-        public bool IsCompleted { get; set; }
+        return ValueTask.CompletedTask;
     }
 }
