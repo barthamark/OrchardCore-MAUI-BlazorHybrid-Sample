@@ -2,6 +2,7 @@
 
 @inject AppState AppState
 @inject NavigationManager Navigation
+@implements IDisposable
 
 <div class="backdrop @(IsOpen ? string.Empty : "hidden")"
      data-part="backdrop"
@@ -70,6 +71,11 @@
     private string UserName => AppState.UserProfile?.UserName ?? "Harvest Demo";
     private string UserEmail => AppState.UserProfile?.Email ?? "orchard.harvest@example.com";
 
+    protected override void OnInitialized()
+    {
+        AppState.OnChanged += HandleAppStateChanged;
+    }
+
     private Task HandleClose()
     {
         if (OnClose.HasDelegate)
@@ -92,5 +98,15 @@
     {
         await HandleClose();
         Navigation.NavigateTo("/account", forceLoad: false);
+    }
+
+    private void HandleAppStateChanged(object? sender, EventArgs args)
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChanged -= HandleAppStateChanged;
     }
 }

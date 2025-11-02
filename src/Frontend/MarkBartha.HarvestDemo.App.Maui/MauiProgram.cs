@@ -50,7 +50,7 @@ public static class MauiProgram
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        builder.Services.AddSingleton<AppState>();
+        builder.Services.AddScoped<AppState>();
         builder.Services.AddSingleton<ITodoService, InMemoryTodoService>();
         builder.Services.AddHttpClient<TodoApiService>(client =>
         {
@@ -59,9 +59,40 @@ public static class MauiProgram
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
         builder.Services.AddScoped<TodoState>();
-        
-        builder.Services.AddHarvestDemoClient().ConfigureHttpClient(client =>
-            client.BaseAddress = new Uri(AppConfig.ApiBaseUrl + "graphql"));
+
+        builder.Services.AddHarvestDemoClient()
+            .ConfigureHttpClient((services, client) =>
+            {
+                client.BaseAddress = new Uri(AppConfig.ApiBaseUrl + "graphql");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string? token = null;
+                try
+                {
+                    var authProvider = services.GetRequiredService<ExternalAuthenticationStateProvider>();
+                    token = authProvider.GetAccessTokenAsync()
+                        .ConfigureAwait(false)
+                        .GetAwaiter()
+                        .GetResult();
+                }
+                catch (Exception ex)
+                {
+                    var loggerFactory = services.GetService<ILoggerFactory>();
+                    loggerFactory?
+                        .CreateLogger("GraphQL.Auth")
+                        .LogWarning(ex, "Unable to resolve access token for GraphQL client configuration.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                else
+                {
+                    client.DefaultRequestHeaders.Authorization = null;
+                }
+            });
 
         return builder.Build();
     }

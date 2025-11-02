@@ -82,26 +82,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        EnsureUserProfile();
-
         _cts = new CancellationTokenSource();
         TodoState.StateChanged += HandleTodoStateChanged;
+
+        await AppState.EnsureUserProfileAsync(_cts.Token);
         await TodoState.InitializeAsync(_cts.Token);
-    }
-
-    private void EnsureUserProfile()
-    {
-        if (AppState.UserProfile is not null)
-        {
-            return;
-        }
-
-        AppState.SetUserProfile(new UserProfile
-        {
-            UserId = Guid.NewGuid().ToString("N"),
-            UserName = "Harvest Demo",
-            Email = "orchard.harvest@example.com",
-        });
     }
 
     private void HandleTodoStateChanged() => InvokeAsync(StateHasChanged);
