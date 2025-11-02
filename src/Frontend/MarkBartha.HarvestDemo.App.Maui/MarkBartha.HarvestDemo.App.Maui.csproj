@@ -76,7 +76,7 @@
       <Folder Include="Blazor\Pages\" />
     </ItemGroup>
 
-    <Import Project="$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
-    <Import Project="$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
 
 </Project>

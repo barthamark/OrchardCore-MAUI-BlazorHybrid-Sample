@@ -1,15 +1,21 @@
 <Project>
 
   <PropertyGroup>
-    <SharedAssetsFolder>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Assets\</SharedAssetsFolder>
-    <SharedPublishedAssetsFolder>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\wwwroot\</SharedPublishedAssetsFolder>
-    <LocalAssetsFolder>$(ProjectDir)Assets\</LocalAssetsFolder>
-    <AssetsDestinationFolder>$(ProjectDir)wwwroot\</AssetsDestinationFolder>
-    <SharedPublishedAssetsDestinationFolder>$(AssetsDestinationFolder)</SharedPublishedAssetsDestinationFolder>
-    <SharedAssetsLibManRestoreWorkDir>$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\</SharedAssetsLibManRestoreWorkDir>
-    <SharedAssetsLibManJson>$(SharedAssetsLibManRestoreWorkDir)libman.json</SharedAssetsLibManJson>
-    <SharedAssetsLibManRestoreStamp>$(SharedAssetsLibManRestoreWorkDir)obj\libman.restore.stamp</SharedAssetsLibManRestoreStamp>
-    <SharedAssetsLibManRestoreCommand>dotnet tool run libman restore</SharedAssetsLibManRestoreCommand>
+    <SharedAssetsRoot Condition="'$(SharedAssetsRoot)' == ''">
+      $([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))))
+    </SharedAssetsRoot>
+
+    <SharedAssetsFolder Condition="'$(SharedAssetsFolder)' == ''">$(SharedAssetsRoot)Assets\</SharedAssetsFolder>
+    <SharedPublishedAssetsFolder Condition="'$(SharedPublishedAssetsFolder)' == ''">$(SharedAssetsRoot)wwwroot\</SharedPublishedAssetsFolder>
+
+    <LocalAssetsFolder Condition="'$(LocalAssetsFolder)' == ''">$(ProjectDir)Assets\</LocalAssetsFolder>
+    <AssetsDestinationFolder Condition="'$(AssetsDestinationFolder)' == ''">$(ProjectDir)wwwroot\</AssetsDestinationFolder>
+    <SharedPublishedAssetsDestinationFolder Condition="'$(SharedPublishedAssetsDestinationFolder)' == ''">$(AssetsDestinationFolder)</SharedPublishedAssetsDestinationFolder>
+
+    <SharedAssetsLibManRestoreWorkDir Condition="'$(SharedAssetsLibManRestoreWorkDir)' == ''">$(SharedAssetsRoot)</SharedAssetsLibManRestoreWorkDir>
+    <SharedAssetsLibManJson Condition="'$(SharedAssetsLibManJson)' == ''">$(SharedAssetsLibManRestoreWorkDir)libman.json</SharedAssetsLibManJson>
+    <SharedAssetsLibManRestoreStamp Condition="'$(SharedAssetsLibManRestoreStamp)' == ''">$(SharedAssetsLibManRestoreWorkDir)obj\libman.restore.stamp</SharedAssetsLibManRestoreStamp>
+    <SharedAssetsLibManRestoreCommand Condition="'$(SharedAssetsLibManRestoreCommand)' == ''">dotnet tool run libman restore</SharedAssetsLibManRestoreCommand>
 
     <AssetsIncludePattern>**\*</AssetsIncludePattern>
     <AssetsExcludePattern>css\**\*</AssetsExcludePattern>
