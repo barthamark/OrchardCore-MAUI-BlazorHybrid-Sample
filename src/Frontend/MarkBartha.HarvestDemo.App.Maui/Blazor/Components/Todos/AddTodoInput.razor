@@ -1,0 +1,80 @@
+@using Microsoft.AspNetCore.Components
+
+<div class="card shadow-sm w-full @ContainerClasses">
+    <div class="@InputWrapperClass">
+        <input class="input w-full"
+               placeholder="Add a new task..."
+               autocomplete="off"
+               value="@currentValue"
+               @oninput="HandleInput"
+               @onkeydown="HandleKeyDown"
+               @ref="inputElement" />
+
+        @if (IsInline)
+        {
+            <button type="button"
+                    class="btn btn-primary"
+                    aria-label="Add task"
+                    @onclick="OnSubmitClicked">
+                <i class="icon-plus" aria-hidden="true"></i>
+                <span class="sr-only">Add</span>
+            </button>
+        }
+    </div>
+
+    @if (!IsInline)
+    {
+        <div class="flex gap-2 mt-4">
+            <button type="button"
+                    class="btn btn-primary flex-1"
+                    @onclick="OnSubmitClicked">
+                Add
+            </button>
+            <button type="button"
+                    class="btn btn-ghost flex-1"
+                    @onclick="OnCancelClicked">
+                Cancel
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private ElementReference inputElement;
+    private string currentValue = string.Empty;
+
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
+    [Parameter] public bool IsInline { get; set; }
+
+    private string ContainerClasses => IsInline ? "p-4 flex gap-3" : "p-4 space-y-4";
+    private string InputWrapperClass => IsInline ? "flex gap-3 items-center" : string.Empty;
+
+    public async Task FocusAsync()
+    {
+        await Task.Yield();
+        await inputElement.FocusAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        var incoming = Value ?? string.Empty;
+        if (!string.Equals(currentValue, incoming, StringComparison.Ordinal))
+        {
+            currentValue = incoming;
+        }
+    }
+
+    private Task HandleInput(ChangeEventArgs args)
+    {
+        currentValue = args.Value?.ToString() ?? string.Empty;
+        return ValueChanged.HasDelegate ? ValueChanged.InvokeAsync(currentValue) : Task.CompletedTask;
+    }
+
+    private Task OnSubmitClicked() => OnSubmit.HasDelegate ? OnSubmit.InvokeAsync() : Task.CompletedTask;
+    private Task OnCancelClicked() => OnCancel.HasDelegate ? OnCancel.InvokeAsync() : Task.CompletedTask;
+    private Task HandleKeyDown(KeyboardEventArgs args) => OnKeyDown.HasDelegate ? OnKeyDown.InvokeAsync(args) : Task.CompletedTask;
+}

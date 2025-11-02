@@ -1,0 +1,46 @@
+@using Microsoft.AspNetCore.Components
+
+<article role="listitem"
+         class="bg-surface-0 rounded-lg p-4 shadow-sm flex items-center gap-3 group hover:shadow-md transition-shadow">
+    <button type="button"
+            class="@CheckboxClass ring-focus"
+            aria-label="@ToggleLabel"
+            @onclick="OnToggle">
+        @if (IsCompleted)
+        {
+            <i class="icon-check text-white text-sm" aria-hidden="true"></i>
+        }
+    </button>
+
+    <span class="@TextClass">
+        @Title
+    </span>
+
+    <button type="button"
+            class="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Delete task"
+            @onclick="OnDelete">
+        <i class="icon-trash-2 text-gray-400" aria-hidden="true"></i>
+    </button>
+</article>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public bool IsCompleted { get; set; }
+    [Parameter] public EventCallback<int> Toggle { get; set; }
+    [Parameter] public EventCallback<int> Delete { get; set; }
+
+    private string CheckboxClass => IsCompleted
+        ? "checkbox-circle checkbox-circle--checked"
+        : "checkbox-circle";
+
+    private string TextClass => IsCompleted
+        ? "flex-1 line-through opacity-50"
+        : "flex-1";
+
+    private string ToggleLabel => IsCompleted ? "Mark incomplete" : "Mark complete";
+
+    private Task OnToggle() => Toggle.HasDelegate ? Toggle.InvokeAsync(Id) : Task.CompletedTask;
+    private Task OnDelete() => Delete.HasDelegate ? Delete.InvokeAsync(Id) : Task.CompletedTask;
+}

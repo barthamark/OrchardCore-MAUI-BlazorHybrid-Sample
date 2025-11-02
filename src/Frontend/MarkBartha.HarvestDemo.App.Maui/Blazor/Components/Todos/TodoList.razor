@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Components
+@using MarkBartha.HarvestDemo.App.Maui.Blazor.Components.Todos
+
+<section aria-labelledby="todo-list-heading"
+         class="space-y-3 @(HasItems ? string.Empty : "hidden")"
+         role="list">
+    <h2 id="todo-list-heading" class="sr-only">To-dos</h2>
+
+    @if (Items is not null)
+    {
+        foreach (var todo in Items)
+        {
+            <TodoItemCard Id="@todo.Id"
+                          Title="@todo.Title"
+                          IsCompleted="@todo.IsCompleted"
+                          Toggle="Toggle"
+                          Delete="Delete" />
+        }
+    }
+</section>
+
+@code {
+    [Parameter] public IReadOnlyList<TodoItemModel>? Items { get; set; }
+    [Parameter] public EventCallback<int> Toggle { get; set; }
+    [Parameter] public EventCallback<int> Delete { get; set; }
+
+    private bool HasItems => Items is { Count: > 0 };
+
+    public record TodoItemModel(int Id, string Title, bool IsCompleted);
+}

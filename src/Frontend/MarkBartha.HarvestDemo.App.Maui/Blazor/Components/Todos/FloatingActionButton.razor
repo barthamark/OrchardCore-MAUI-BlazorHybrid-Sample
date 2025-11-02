@@ -1,0 +1,15 @@
+@using Microsoft.AspNetCore.Components
+
+<button type="button"
+        class="fab md:hidden @(Hidden ? "hidden" : string.Empty)"
+        aria-label="Add task"
+        @onclick="HandleClick">
+    <i class="icon-plus" aria-hidden="true"></i>
+</button>
+
+@code {
+    [Parameter] public bool Hidden { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private Task HandleClick() => OnClick.HasDelegate ? OnClick.InvokeAsync() : Task.CompletedTask;
+}
