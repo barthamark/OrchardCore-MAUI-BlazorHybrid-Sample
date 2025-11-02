@@ -1,15 +1,13 @@
 <Project>
 
   <PropertyGroup>
-    <SharedAssetsRoot Condition="'$(SharedAssetsRoot)' == ''">
-      $([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))))
-    </SharedAssetsRoot>
+    <SharedAssetsRoot Condition="'$(SharedAssetsRoot)' == ''">$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))))</SharedAssetsRoot>
 
-    <SharedAssetsFolder Condition="'$(SharedAssetsFolder)' == ''">$(SharedAssetsRoot)Assets\</SharedAssetsFolder>
-    <SharedPublishedAssetsFolder Condition="'$(SharedPublishedAssetsFolder)' == ''">$(SharedAssetsRoot)wwwroot\</SharedPublishedAssetsFolder>
+    <SharedAssetsFolder Condition="'$(SharedAssetsFolder)' == ''">$([MSBuild]::EnsureTrailingSlash('$(SharedAssetsRoot)Assets'))</SharedAssetsFolder>
+    <SharedPublishedAssetsFolder Condition="'$(SharedPublishedAssetsFolder)' == ''">$([MSBuild]::EnsureTrailingSlash('$(SharedAssetsRoot)wwwroot'))</SharedPublishedAssetsFolder>
 
-    <LocalAssetsFolder Condition="'$(LocalAssetsFolder)' == ''">$(ProjectDir)Assets\</LocalAssetsFolder>
-    <AssetsDestinationFolder Condition="'$(AssetsDestinationFolder)' == ''">$(ProjectDir)wwwroot\</AssetsDestinationFolder>
+    <LocalAssetsFolder Condition="'$(LocalAssetsFolder)' == ''">$([MSBuild]::EnsureTrailingSlash('$(ProjectDir)Assets'))</LocalAssetsFolder>
+    <AssetsDestinationFolder Condition="'$(AssetsDestinationFolder)' == ''">$([MSBuild]::EnsureTrailingSlash('$(ProjectDir)wwwroot'))</AssetsDestinationFolder>
     <SharedPublishedAssetsDestinationFolder Condition="'$(SharedPublishedAssetsDestinationFolder)' == ''">$(AssetsDestinationFolder)</SharedPublishedAssetsDestinationFolder>
 
     <SharedAssetsLibManRestoreWorkDir Condition="'$(SharedAssetsLibManRestoreWorkDir)' == ''">$(SharedAssetsRoot)</SharedAssetsLibManRestoreWorkDir>
@@ -24,6 +22,15 @@
 
     <AutoCopyOverwriteReadOnlyFiles>true</AutoCopyOverwriteReadOnlyFiles>
     <AutoCopyFailOnError>true</AutoCopyFailOnError>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SharedAssetsFolder>$([MSBuild]::EnsureTrailingSlash('$(SharedAssetsFolder)'))</SharedAssetsFolder>
+    <SharedPublishedAssetsFolder>$([MSBuild]::EnsureTrailingSlash('$(SharedPublishedAssetsFolder)'))</SharedPublishedAssetsFolder>
+    <SharedAssetsLibManRestoreWorkDir>$([MSBuild]::EnsureTrailingSlash('$(SharedAssetsLibManRestoreWorkDir)'))</SharedAssetsLibManRestoreWorkDir>
+    <LocalAssetsFolder>$([MSBuild]::EnsureTrailingSlash('$(LocalAssetsFolder)'))</LocalAssetsFolder>
+    <AssetsDestinationFolder>$([MSBuild]::EnsureTrailingSlash('$(AssetsDestinationFolder)'))</AssetsDestinationFolder>
+    <SharedPublishedAssetsDestinationFolder>$([MSBuild]::EnsureTrailingSlash('$(SharedPublishedAssetsDestinationFolder)'))</SharedPublishedAssetsDestinationFolder>
   </PropertyGroup>
 
   <Target Name="RestoreSharedLibManAssets"
@@ -95,12 +102,12 @@
     <Message Text="Files identified for auto-copy:" Importance="low" />
     <Message Text="  - %(FilesToCopyFiltered.Identity) -> %(FilesToCopyFiltered.DestinationRoot)%(FilesToCopyFiltered.RelativePath)" Importance="low" />
 
-    <MakeDir Directories="@(AssetDestinationRoot)" Condition="'@(AssetDestinationRoot)' != ''" />
-
     <Copy
+      Condition="'@(FilesToCopyFiltered)' != ''"
       SourceFiles="@(FilesToCopyFiltered)"
       DestinationFiles="@(FilesToCopyFiltered->'%(DestinationRoot)%(RelativePath)')"
       OverwriteReadOnlyFiles="$(AutoCopyOverwriteReadOnlyFiles)"
+      SkipUnchangedFiles="true"
       ContinueOnError="$(AutoCopyFailOnError)" />
 
     <Message Text="Auto-copy complete for project: $(MSBuildProjectName)" Importance="high" />
