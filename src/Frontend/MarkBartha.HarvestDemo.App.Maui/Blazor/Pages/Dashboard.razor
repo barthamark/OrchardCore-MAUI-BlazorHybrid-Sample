@@ -1,12 +1,233 @@
-﻿@page "/"
+@page "/"
 @attribute [Authorize]
+@inject AppState AppState
 
-<main class="flex-1 px-4 py-4 space-y-6 pb-24">
+<PageTitle>Tasks</PageTitle>
 
-    <PageTitle>Dashboard</PageTitle>
+<main class="content-container page-padding pb-32 md:pb-6 flex-1 space-y-6">
+    <!-- Desktop add -->
+    <section class="hidden md:block">
+        <div class="card p-4 shadow-sm flex gap-3">
+            <input class="input flex-1"
+                   placeholder="Add a new task..."
+                   autocomplete="off"
+                   @bind="newTodoText"
+                   @bind:event="oninput"
+                   @onkeydown="HandleDesktopKeyDown" />
+            <button type="button"
+                    class="btn btn-primary"
+                    @onclick="AddTodoFromDesktop"
+                    aria-label="Add task">
+                <i class="icon-plus" aria-hidden="true"></i>
+                <span class="sr-only">Add</span>
+            </button>
+        </div>
+    </section>
 
+    <!-- Mobile add -->
+    <section class="md:hidden @(isAddingMobile ? string.Empty : "hidden")">
+        <div class="card shadow-sm p-4 space-y-4">
+            <input class="input w-full"
+                   placeholder="Add a new task..."
+                   autocomplete="off"
+                   @bind="newTodoMobileText"
+                   @bind:event="oninput"
+                   @onkeydown="HandleMobileKeyDown" />
+
+            <div class="flex gap-2">
+                <button type="button"
+                        class="btn btn-primary flex-1"
+                        @onclick="AddTodoFromMobile">
+                    Add
+                </button>
+                <button type="button"
+                        class="btn btn-ghost flex-1"
+                        @onclick="CancelMobileAdd">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Todo list -->
+    <section aria-labelledby="todo-list-heading"
+             class="space-y-3 @(todos.Count == 0 ? "hidden" : string.Empty)"
+             role="list">
+        <h2 id="todo-list-heading" class="sr-only">To-dos</h2>
+
+        @foreach (var todo in todos)
+        {
+            <article role="listitem"
+                     class="bg-surface-0 rounded-lg p-4 shadow-sm flex items-center gap-3 group hover:shadow-md transition-shadow">
+                <button type="button"
+                        class="@GetCheckboxClass(todo.IsCompleted) ring-focus"
+                        aria-label="@GetToggleAriaLabel(todo)"
+                        @onclick="() => ToggleTodo(todo.Id)">
+                    @if (todo.IsCompleted)
+                    {
+                        <i class="icon-check text-white text-sm" aria-hidden="true"></i>
+                    }
+                </button>
+
+                <span class="@GetTodoTextClass(todo.IsCompleted)">
+                    @todo.Title
+                </span>
+
+                <button type="button"
+                        class="btn-icon opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label="Delete task"
+                        @onclick="() => DeleteTodo(todo.Id)">
+                    <i class="icon-trash-2 text-gray-400" aria-hidden="true"></i>
+                </button>
+            </article>
+        }
+    </section>
+
+    <!-- Empty state -->
+    <section class="text-center py-12 @(todos.Count == 0 ? string.Empty : "hidden")" data-state="empty">
+        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand text-white">
+            <i class="icon-check text-xl" aria-hidden="true"></i>
+        </div>
+        <p class="text-[color:var(--color-text-muted)] text-lg">No tasks yet</p>
+    </section>
 </main>
 
-@code {
+<!-- FAB -->
+<button type="button"
+        class="fab md:hidden @(isAddingMobile ? "hidden" : string.Empty)"
+        aria-label="Add task"
+        @onclick="StartMobileAdd">
+    <i class="icon-plus" aria-hidden="true"></i>
+</button>
 
+@code {
+    private readonly List<TodoItem> todos =
+    [
+        new TodoItem(1, "Design new landing page", false),
+        new TodoItem(2, "Update documentation", true),
+        new TodoItem(3, "Plan onboarding session", false),
+    ];
+
+    private int nextId = 4;
+    private string newTodoText = string.Empty;
+    private string newTodoMobileText = string.Empty;
+    private bool isAddingMobile;
+
+    protected override void OnInitialized()
+    {
+        if (AppState.UserProfile is null)
+        {
+            AppState.SetUserProfile(new UserProfile
+            {
+                UserId = Guid.NewGuid().ToString("N"),
+                UserName = "John Doe",
+                Email = "john@example.com",
+            });
+        }
+    }
+
+    private void AddTodoFromDesktop()
+    {
+        if (TryAddTodo(newTodoText))
+        {
+            newTodoText = string.Empty;
+        }
+    }
+
+    private void AddTodoFromMobile()
+    {
+        if (TryAddTodo(newTodoMobileText))
+        {
+            newTodoMobileText = string.Empty;
+            isAddingMobile = false;
+        }
+    }
+
+    private bool TryAddTodo(string? value)
+    {
+        var trimmed = value?.Trim();
+        if (string.IsNullOrEmpty(trimmed))
+        {
+            return false;
+        }
+
+        todos.Insert(0, new TodoItem(nextId++, trimmed, false));
+        return true;
+    }
+
+    private void ToggleTodo(int id)
+    {
+        var todo = todos.FirstOrDefault(t => t.Id == id);
+        if (todo is null)
+        {
+            return;
+        }
+
+        todo.IsCompleted = !todo.IsCompleted;
+    }
+
+    private void DeleteTodo(int id)
+    {
+        var todo = todos.FirstOrDefault(t => t.Id == id);
+        if (todo is null)
+        {
+            return;
+        }
+
+        todos.Remove(todo);
+    }
+
+    private void StartMobileAdd()
+    {
+        isAddingMobile = true;
+    }
+
+    private void CancelMobileAdd()
+    {
+        newTodoMobileText = string.Empty;
+        isAddingMobile = false;
+    }
+
+    private void HandleDesktopKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            AddTodoFromDesktop();
+        }
+    }
+
+    private void HandleMobileKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            AddTodoFromMobile();
+        }
+    }
+
+    private static string GetCheckboxClass(bool isCompleted) =>
+        isCompleted
+            ? "checkbox-circle checkbox-circle--checked"
+            : "checkbox-circle";
+
+    private static string GetTodoTextClass(bool isCompleted) =>
+        isCompleted
+            ? "flex-1 line-through opacity-50"
+            : "flex-1";
+
+    private static string GetToggleAriaLabel(TodoItem todo) =>
+        todo.IsCompleted ? "Mark incomplete" : "Mark complete";
+
+    private class TodoItem
+    {
+        public TodoItem(int id, string title, bool isCompleted)
+        {
+            Id = id;
+            Title = title;
+            IsCompleted = isCompleted;
+        }
+
+        public int Id { get; }
+        public string Title { get; }
+        public bool IsCompleted { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
 <div class="desktop-grid">
     <!-- Sidebar -->
@@ -7,18 +8,11 @@
     <!-- Main area -->
     <div class="flex flex-col min-h-screen">
         <!-- Header -->
-        <Header Title="Forespend"
+        <Header Title="@headerTitle"
                 ShowBack="false"
                 ShowNotification="true"
                 OnToggleSidebar="() => isSidebarOpen = true">
         </Header>
-
-        <AuthorizeView>
-            <Authorized>
- 
-                Hello, @string.Join(", ", context.User.Claims.Select(k => $"{k.Type}: {k.Value}")) <i class="icon-log-out text-[20px]"></i>
-            </Authorized>
-        </AuthorizeView>
 
         @Body
     </div>
@@ -26,6 +20,36 @@
 
 @code {
     private bool isSidebarOpen;
+    private string headerTitle = "Tasks";
 
+    protected override void OnInitialized()
+    {
+        UpdateHeaderTitle(Navigation.Uri);
+        Navigation.LocationChanged += HandleLocationChanged;
+    }
 
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        UpdateHeaderTitle(e.Location);
+        StateHasChanged();
+    }
+
+    private void UpdateHeaderTitle(string uri)
+    {
+        var relative = Navigation.ToBaseRelativePath(uri);
+
+        if (string.IsNullOrEmpty(relative) || relative.StartsWith("dashboard", StringComparison.OrdinalIgnoreCase))
+        {
+            headerTitle = "Tasks";
+        }
+        else
+        {
+            headerTitle = "Forespend";
+        }
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= HandleLocationChanged;
+    }
 }
