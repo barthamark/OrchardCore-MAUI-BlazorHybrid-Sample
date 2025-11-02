@@ -6,8 +6,28 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <LibManRestoreCommand Condition="'$(LibManRestoreCommand)' == ''">dotnet tool run libman restore</LibManRestoreCommand>
+        <LibManRestoreWorkingDirectory Condition="'$(LibManRestoreWorkingDirectory)' == ''">$([MSBuild]::EnsureTrailingSlash('$(MSBuildProjectDirectory)'))</LibManRestoreWorkingDirectory>
+        <LibManRestoreJson Condition="'$(LibManRestoreJson)' == ''">$(LibManRestoreWorkingDirectory)libman.json</LibManRestoreJson>
+        <LibManRestoreStamp Condition="'$(LibManRestoreStamp)' == ''">$(MSBuildProjectExtensionsPath)libman.restore.stamp</LibManRestoreStamp>
+    </PropertyGroup>
+
     <ItemGroup>
       <Folder Include="wwwroot\vendors\" />
     </ItemGroup>
+
+    <Target Name="RestoreLibManPackages"
+            Condition="Exists('$(LibManRestoreJson)')"
+            Inputs="$(LibManRestoreJson)"
+            Outputs="$(LibManRestoreStamp)"
+            BeforeTargets="BeforeBuild">
+        <Message Text="Restoring LibMan packages for assets project: $(MSBuildProjectName)" Importance="high" />
+        <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(LibManRestoreStamp)'))" />
+        <Exec Command="$(LibManRestoreCommand)" WorkingDirectory="$(LibManRestoreWorkingDirectory)" />
+        <WriteLinesToFile File="$(LibManRestoreStamp)"
+                          Lines="$([System.DateTime]::UtcNow.ToString('O'))"
+                          Overwrite="true" />
+    </Target>
 
 </Project>

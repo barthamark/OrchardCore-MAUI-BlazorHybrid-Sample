@@ -1,38 +1,31 @@
 ﻿@inherits LayoutComponentBase
 
-@* <div class="desktop-grid"> *@
-@*     <!-- Sidebar --> *@
-@*     <Sidebar IsOpen="@isSidebarOpen" OnClose="() => isSidebarOpen = false" /> *@
-@* *@
-@*     <!-- Main area --> *@
-@*     <div class="flex flex-col min-h-screen"> *@
-@*         <!-- Header --> *@
-@*         <Header Title="Forespend" *@
-@*                 ShowBack="false" *@
-@*                 ShowNotification="true" *@
-@*                 OnToggleSidebar="() => isSidebarOpen = true"> *@
-@*         </Header> *@
-@* *@
-@*         <AuthorizeView> *@
-@*             <Authorized> *@
-@* *@
-@*                 Hello, @string.Join(", ", context.User.Claims.Select(k => $"{k.Type}: {k.Value}")) *@
-@*             </Authorized> *@
-@*         </AuthorizeView> *@
-@* *@
-@*         @Body *@
-@*     </div> *@
-@* </div> *@
-@* *@
-@* @code { *@
-@*     private bool isSidebarOpen; *@
-@* *@
-@* *@
-@* } *@
+<div class="desktop-grid">
+    <!-- Sidebar -->
+    <Sidebar IsOpen="@isSidebarOpen" OnClose="() => isSidebarOpen = false" />
+
+    <!-- Main area -->
+    <div class="flex flex-col min-h-screen">
+        <!-- Header -->
+        <Header Title="Forespend"
+                ShowBack="false"
+                ShowNotification="true"
+                OnToggleSidebar="() => isSidebarOpen = true">
+        </Header>
 
         <AuthorizeView>
             <Authorized>
-
-                Hello, @string.Join(", ", context.User.Claims.Select(k => $"{k.Type}: {k.Value}"))
+ 
+                Hello, @string.Join(", ", context.User.Claims.Select(k => $"{k.Type}: {k.Value}")) <i class="icon-log-out text-[20px]"></i>
             </Authorized>
         </AuthorizeView>
+
+        @Body
+    </div>
+</div>
+
+@code {
+    private bool isSidebarOpen;
+
+
+}

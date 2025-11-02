@@ -19,10 +19,7 @@
           href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/favicon/web-app-manifest-512x512.png")">
 
     <style asp-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/css/app.css"></style>
-
-    <script asp-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.min.js"
-            debug-src="~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/dist/umd/lucide.js" at="Foot"></script>
-    @* <script asp-src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" at="Foot"></script> *@
+    <link rel="stylesheet" href="@Href("~/MarkBartha.HarvestDemo.OrchardCore.Theme/vendors/lucide/font/lucide.css")"/>
 
     <resources type="Header"/>
 
@@ -42,8 +39,5 @@
 </main>
 
 <resources type="Footer"/>
-<script>
-    lucide.createIcons();
-</script>
 </body>
 </html>

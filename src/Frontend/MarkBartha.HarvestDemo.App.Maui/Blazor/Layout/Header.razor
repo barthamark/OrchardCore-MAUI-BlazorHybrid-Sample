@@ -1,0 +1,44 @@
+﻿<header class="sticky top-0 z-20 flex items-center justify-between w-full px-4 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center">
+        @if (ShowBack)
+        {
+            <button class="mr-2 p-1" @onclick="GoBack" aria-label="Go back">
+                <i class="icon-arrow-left text-gray-600 dark:text-gray-400 text-[20px]"></i>
+            </button>
+        }
+        else
+        {
+            <button class="mr-2 p-1 lg:hidden" @onclick="ToggleSidebar" aria-label="Toggle menu">
+                <i class="icon-menu text-gray-600 dark:text-gray-400 text-[20px]"></i>
+            </button>
+        }
+
+        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">
+            @Title
+        </h1>
+    </div>
+
+    @if (ShowNotification)
+    {
+        <button class="p-1" aria-label="Notifications">
+            <i class="icon-bell text-gray-600 dark:text-gray-400 text-[20px]"></i>
+        </button>
+    }
+</header>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Forespend";
+    [Parameter] public bool ShowBack { get; set; } = false;
+    [Parameter] public bool ShowNotification { get; set; } = true;
+    [Parameter] public EventCallback OnToggleSidebar { get; set; }
+
+    [Inject] private NavigationManager Nav { get; set; }
+
+    private void ToggleSidebar() => OnToggleSidebar.InvokeAsync();
+
+    private void GoBack()
+    {
+        // Simulate history back — works best in Blazor WebAssembly with proper navigation stack
+        Nav.NavigateTo(Nav.Uri, forceLoad: true); // or use JS interop to go back in browser history
+    }
+}

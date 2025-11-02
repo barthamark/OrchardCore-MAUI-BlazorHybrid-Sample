@@ -3,11 +3,15 @@
   "defaultProvider": "unpkg",
   "libraries": [
     {
-      "library": "lucide@latest",
+      "library": "lucide-static@latest",
       "destination": "wwwroot/vendors/lucide",
       "files": [
-        "dist/umd/lucide.js",
-        "dist/umd/lucide.min.js"
+        "font/lucide.css",
+        "font/lucide.eot",
+        "font/lucide.woff2",
+        "font/lucide.woff",
+        "font/lucide.ttf",
+        "font/lucide.svg"
       ]
     }
   ]
