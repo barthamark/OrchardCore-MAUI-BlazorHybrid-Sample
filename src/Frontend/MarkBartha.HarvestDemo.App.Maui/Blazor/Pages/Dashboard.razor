@@ -13,13 +13,32 @@
 
 <main class="content-container page-padding pb-32 md:pb-6 flex-1">
     <div class="max-w-5xl mx-auto w-full space-y-6">
+        @* <UseGetToDos Context="result"> *@
+        @*     <ChildContent> *@
+        @*         <ul> *@
+        @*             @foreach (var item in result.ToDo!) *@
+        @*             { *@
+        @*                 <li>@item.ContentItemId (@item.DisplayText)</li> *@
+        @*             } *@
+        @*         </ul> *@
+        @*     </ChildContent> *@
+        @*     <ErrorContent> *@
+        @*         Something went wrong ...<br /> *@
+        @*         @result.First().Message *@
+        @*     </ErrorContent> *@
+        @*     <LoadingContent> *@
+        @*         Loading ... *@
+        @*     </LoadingContent> *@
+        @* </UseGetToDos> *@
+        
+        
         <section class="hidden md:block">
             <AddTodoInput IsInline="true"
                           Value="@newTodoText"
                           ValueChanged="HandleDesktopValueChanged"
                           OnSubmit="AddTodoFromDesktopAsync"
                           OnKeyDown="HandleDesktopKeyDownAsync"
-                          @ref="desktopAddRef" />
+                          @ref="desktopAddRef"/>
         </section>
 
         <section class="md:hidden @(isAddingMobile ? string.Empty : "hidden")">
@@ -29,7 +48,7 @@
                           OnSubmit="AddTodoFromMobileAsync"
                           OnCancel="CancelMobileAdd"
                           OnKeyDown="HandleMobileKeyDownAsync"
-                          @ref="mobileAddRef" />
+                          @ref="mobileAddRef"/>
         </section>
 
         @if (isLoading)
@@ -39,7 +58,7 @@
             </div>
         }
 
-        <TodoList Items="todos" Toggle="ToggleTodoAsync" Delete="DeleteTodoAsync" />
+        <TodoList Items="todos" Toggle="ToggleTodoAsync" Delete="DeleteTodoAsync"/>
 
         <section class="text-center py-12 @((!isLoading && todos.Count == 0) ? string.Empty : "hidden")" data-state="empty">
             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand text-white">

@@ -59,6 +59,9 @@ public static class MauiProgram
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
         builder.Services.AddScoped<TodoState>();
+        
+        builder.Services.AddHarvestDemoClient().ConfigureHttpClient(client =>
+            client.BaseAddress = new Uri(AppConfig.ApiBaseUrl + "graphql"));
 
         return builder.Build();
     }
