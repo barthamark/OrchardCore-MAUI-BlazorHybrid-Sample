@@ -1,0 +1,96 @@
+@using Microsoft.AspNetCore.Components
+
+@inject AppState AppState
+@inject NavigationManager Navigation
+
+<div class="backdrop @(IsOpen ? string.Empty : "hidden")"
+     data-part="backdrop"
+     aria-hidden="@(!IsOpen)"
+     @onclick="HandleClose">
+</div>
+
+<aside class="menu-panel @(IsOpen ? string.Empty : "translate-x-full")"
+       data-part="panel"
+       aria-label="Main menu"
+       aria-hidden="@(!IsOpen)">
+
+    <div class="p-6 border-b border-[color:var(--color-border)]">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">Menu</h2>
+            <button type="button"
+                    class="btn-icon"
+                    aria-label="Close menu"
+                    @onclick="HandleClose">
+                <i class="icon-x" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center">
+                <i class="icon-user" aria-hidden="true"></i>
+            </div>
+            <div>
+                <p class="font-semibold">@UserName</p>
+                <p class="text-sm text-[color:var(--color-text-muted)]">@UserEmail</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="p-4 space-y-2">
+        <button type="button"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                @onclick="NavigateToAccount">
+            <i class="icon-user text-gray-600" aria-hidden="true"></i>
+            <span class="font-medium">Account</span>
+        </button>
+
+        <button type="button"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-left group"
+                @onclick="HandleSignOut">
+            <i class="icon-log-out text-gray-600 group-hover:text-red-600" aria-hidden="true"></i>
+            <span class="font-medium text-gray-700 group-hover:text-red-600">Sign Out</span>
+        </button>
+    </nav>
+
+    <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-[color:var(--color-border)]">
+        <p class="text-xs text-[color:var(--color-text-muted)] text-center">Version 1.0.0</p>
+    </div>
+</aside>
+
+@code {
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback OnSignOut { get; set; }
+
+    private string UserName => AppState.UserProfile?.UserName ?? "Harvest Demo";
+    private string UserEmail => AppState.UserProfile?.Email ?? "orchard.harvest@example.com";
+
+    private Task HandleClose()
+    {
+        if (OnClose.HasDelegate)
+        {
+            return OnClose.InvokeAsync();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task HandleSignOut()
+    {
+        if (OnSignOut.HasDelegate)
+        {
+            await OnSignOut.InvokeAsync();
+        }
+    }
+
+    private async Task NavigateToAccount()
+    {
+        await HandleClose();
+        Navigation.NavigateTo("/account", forceLoad: false);
+    }
+}

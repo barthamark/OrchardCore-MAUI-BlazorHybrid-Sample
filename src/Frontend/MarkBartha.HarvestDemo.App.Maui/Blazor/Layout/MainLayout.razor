@@ -1,25 +1,23 @@
 @inherits LayoutComponentBase
+@implements IDisposable
 @inject NavigationManager Navigation
+@inject ExternalAuthenticationStateProvider AuthStateProvider
 
-<div class="desktop-grid">
-    <!-- Sidebar -->
-    <Sidebar IsOpen="@isSidebarOpen" OnClose="() => isSidebarOpen = false" />
+<div class="min-h-screen bg-surface-1 flex flex-col relative">
+    <AppShellHeader Title="@headerTitle"
+                    OnMenu="OpenMenu" />
 
-    <!-- Main area -->
-    <div class="flex flex-col min-h-screen">
-        <!-- Header -->
-        <Header Title="@headerTitle"
-                ShowBack="false"
-                ShowNotification="true"
-                OnToggleSidebar="() => isSidebarOpen = true">
-        </Header>
+    <MenuPanel IsOpen="@isMenuOpen"
+               OnClose="CloseMenu"
+               OnSignOut="SignOutAsync" />
 
+    <div class="flex-1 flex flex-col">
         @Body
     </div>
 </div>
 
 @code {
-    private bool isSidebarOpen;
+    private bool isMenuOpen;
     private string headerTitle = "Tasks";
 
     protected override void OnInitialized()
@@ -31,21 +29,40 @@
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         UpdateHeaderTitle(e.Location);
-        StateHasChanged();
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private void UpdateHeaderTitle(string uri)
     {
         var relative = Navigation.ToBaseRelativePath(uri);
 
-        if (string.IsNullOrEmpty(relative) || relative.StartsWith("dashboard", StringComparison.OrdinalIgnoreCase))
+        headerTitle = string.IsNullOrEmpty(relative) || relative.StartsWith("dashboard", StringComparison.OrdinalIgnoreCase)
+            ? "Tasks"
+            : "Harvest Demo";
+    }
+
+    private void OpenMenu()
+    {
+        if (!isMenuOpen)
         {
-            headerTitle = "Tasks";
+            isMenuOpen = true;
+            StateHasChanged();
         }
-        else
+    }
+
+    private void CloseMenu()
+    {
+        if (isMenuOpen)
         {
-            headerTitle = "Forespend";
+            isMenuOpen = false;
+            StateHasChanged();
         }
+    }
+
+    private async Task SignOutAsync()
+    {
+        await AuthStateProvider.LogoutAsync();
+        CloseMenu();
     }
 
     public void Dispose()
