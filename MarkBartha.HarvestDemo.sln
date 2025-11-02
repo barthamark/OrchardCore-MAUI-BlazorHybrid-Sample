@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{A1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkBartha.HarvestDemo.App.Maui", "src\Frontend\MarkBartha.HarvestDemo.App.Maui\MarkBartha.HarvestDemo.App.Maui.csproj", "{F1D08D69-D72A-4A98-BE8A-2B287FC039BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkBartha.HarvestDemo.Domain", "src\Shared\MarkBartha.HarvestDemo.Domain\MarkBartha.HarvestDemo.Domain.csproj", "{DD568F37-B97E-46E8-891F-B5CCB6659945}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,7 @@ Global
 		{591F2D14-9FBD-4C91-AFE3-45E8F9A564AE} = {3EF60394-9268-4824-B3DD-3AED70AB25C7}
 		{A18C8B58-D417-48BC-BB6F-E63C264EB584} = {15E57569-0E94-4216-BB1C-91BD4D18895D}
 		{F1D08D69-D72A-4A98-BE8A-2B287FC039BF} = {A18C8B58-D417-48BC-BB6F-E63C264EB584}
+		{DD568F37-B97E-46E8-891F-B5CCB6659945} = {3EF60394-9268-4824-B3DD-3AED70AB25C7}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3E95E476-E909-4BC1-A885-3383C6AFBE6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -55,5 +58,9 @@ Global
 		{F1D08D69-D72A-4A98-BE8A-2B287FC039BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D08D69-D72A-4A98-BE8A-2B287FC039BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D08D69-D72A-4A98-BE8A-2B287FC039BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD568F37-B97E-46E8-891F-B5CCB6659945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD568F37-B97E-46E8-891F-B5CCB6659945}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD568F37-B97E-46E8-891F-B5CCB6659945}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD568F37-B97E-46E8-891F-B5CCB6659945}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

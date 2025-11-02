@@ -19,13 +19,12 @@
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
-        <Nullable>enable</Nullable>
 
         <!-- Display name -->
-        <ApplicationTitle>MarkBartha.HarvestDemo.App.Maui</ApplicationTitle>
+        <ApplicationTitle>Orchard Harvest 2025 Demo App</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.markbartha.harvestdemo.app.maui</ApplicationId>
+        <ApplicationId>com.markbartha.harvestdemo</ApplicationId>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -61,9 +60,23 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Duende.IdentityModel.OidcClient" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.5"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Shared\MarkBartha.HarvestDemo.Domain\MarkBartha.HarvestDemo.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Blazor\Pages\" />
+    </ItemGroup>
+
+    <Import Project="$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
+    <Import Project="$(SolutionDir)src\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
 
 </Project>

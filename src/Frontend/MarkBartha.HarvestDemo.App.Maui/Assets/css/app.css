@@ -1,0 +1,26 @@
+﻿@import "../../../../Shared/MarkBartha.HarvestDemo.Assets/Assets/css/common.css";
+
+@source "../../Components/**/*.razor";
+
+#blazor-error-ui {
+    display: none;
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-family: sans-serif;
+    font-size: 0.875rem;
+}
+
+#blazor-error-ui.show {
+    display: block;
+}
+
+#blazor-error-ui .dismiss {
+    margin-left: 1rem;
+    cursor: pointer;
+}

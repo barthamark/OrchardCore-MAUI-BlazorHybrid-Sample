@@ -9,6 +9,6 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        return new Window(new MainPage()) { Title = "MarkBartha.HarvestDemo.App.Maui" };
+        return new Window(new MainPage()) { Title = "Orchard Harvest 2025 Demo App" };
     }
 }

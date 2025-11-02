@@ -1,0 +1,40 @@
+﻿@if (!_initialized)
+{
+    <div class="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 gap-2">
+        <i class="icon-loader animate-spin text-primary-600 dark:text-primary-400 text-2xl"></i>
+        <span class="text-sm text-gray-500 dark:text-gray-400">Loading...</span>
+    </div>
+}
+else
+{
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <Authorized>
+                <Router AppAssembly="@typeof(MauiProgram).Assembly">
+                    <Found Context="routeData">
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+                    </Found>
+                </Router>
+            </Authorized>
+            <NotAuthorized>
+                <Anonymous />
+            </NotAuthorized>
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+}
+
+@code {
+    private bool _initialized;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var loggedIn = await AuthStateProvider.TrySilentLoginAsync();
+
+        // if (loggedIn)
+        // {
+        //     await UserProfileService.GetUserProfileAsync();
+        // }
+
+        _initialized = true;
+    }
+}
