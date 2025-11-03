@@ -14,16 +14,16 @@
       "name": "recipes",
       "Values": [
         {
-          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Web",
           "name": "Headless"
         },
         {
-          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Web",
           "name": "MarkBartha.HarvestDemo.Features"
         },
         {
-          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Theme",
-          "name": "MarkBartha.HarvestDemo.Export"
+          "executionid": "MarkBartha.HarvestDemo.OrchardCore.Web",
+          "name": "MarkBartha.HarvestDemo.Configuration"
         }
       ]
     }

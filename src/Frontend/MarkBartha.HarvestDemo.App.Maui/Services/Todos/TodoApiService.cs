@@ -23,7 +23,7 @@ public class TodoApiService : ITodoService
     public async Task<IReadOnlyList<TodoItem>> GetTodosAsync(CancellationToken cancellationToken = default)
     {
         var client = await _authenticatedHttpClient.GetClientAsync();
-        var response = await client.GetAsync("api/todos", cancellationToken);
+        var response = await client.GetAsync("todos", cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         var todos = await response.Content.ReadFromJsonAsync<List<TodoItem>>(SerializerOptions, cancellationToken)
                     ?? new List<TodoItem>();
@@ -34,7 +34,7 @@ public class TodoApiService : ITodoService
     {
         var payload = new { title };
         var client = await _authenticatedHttpClient.GetClientAsync();
-        var response = await client.PostAsJsonAsync("api/todos", payload, SerializerOptions, cancellationToken);
+        var response = await client.PostAsJsonAsync("todos", payload, SerializerOptions, cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         var created = await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
         if (created is null)
@@ -50,7 +50,7 @@ public class TodoApiService : ITodoService
         var payload = new { isCompleted };
         var client = await _authenticatedHttpClient.GetClientAsync();
         var encodedId = Uri.EscapeDataString(id);
-        var response = await client.PatchAsync($"api/todos/{encodedId}/completion", JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
+        var response = await client.PatchAsync($"todos/{encodedId}/completion", JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         return await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
     }
@@ -59,7 +59,7 @@ public class TodoApiService : ITodoService
     {
         var client = await _authenticatedHttpClient.GetClientAsync();
         var encodedId = Uri.EscapeDataString(id);
-        var response = await client.DeleteAsync($"api/todos/{encodedId}", cancellationToken);
+        var response = await client.DeleteAsync($"todos/{encodedId}", cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
     }
 

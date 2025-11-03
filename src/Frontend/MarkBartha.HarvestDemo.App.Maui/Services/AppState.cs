@@ -69,7 +69,7 @@ public class AppState : IDisposable
         NotifyStateChanged();
     }
 
-    private async Task HandleAuthenticationStateChangedAsync(Task<AuthenticationState> authenticationStateTask)
+    private async void HandleAuthenticationStateChangedAsync(Task<AuthenticationState> authenticationStateTask)
     {
         try
         {

@@ -31,7 +31,11 @@
       <Content Include="Views\_ViewImports.cshtml" />
     </ItemGroup>
 
-    <Import Project="$(MSBuildThisFileDirectory)..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
+    <ItemGroup>
+      <None Remove="Assets\test.txt" />
+    </ItemGroup>
+
+    <Import Project="$(MSBuildThisFileDirectory)..\..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
 
 </Project>

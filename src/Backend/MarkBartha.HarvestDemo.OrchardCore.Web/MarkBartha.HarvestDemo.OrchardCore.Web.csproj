@@ -26,4 +26,10 @@
       <ProjectReference Include="..\Themes\MarkBartha.HarvestDemo.OrchardCore.Theme\MarkBartha.HarvestDemo.OrchardCore.Theme.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Recipes\MarkBartha.HarvestDemo.Configuration.recipe.json" />
+      <EmbeddedResource Include="Recipes\MarkBartha.HarvestDemo.Features.recipe.json" />
+      <EmbeddedResource Include="Recipes\MarkBartha.HarvestDemo.Setup.recipe.json" />
+    </ItemGroup>
+
 </Project>

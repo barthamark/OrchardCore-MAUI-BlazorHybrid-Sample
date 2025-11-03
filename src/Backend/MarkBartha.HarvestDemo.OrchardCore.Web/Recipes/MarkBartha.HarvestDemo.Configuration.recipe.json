@@ -1,6 +1,6 @@
 {
-  "name": "MarkBartha.HarvestDemo.Export",
-  "displayName": "Márk Bartha's Harvest Demo - Export",
+  "name": "MarkBartha.HarvestDemo.Configuration",
+  "displayName": "Márk Bartha's Harvest Demo - Configuration",
   "description": "Contents and configuration to transfer between development and production environments.",
   "author": "Márk Bartha",
   "website": "https://markbartha.com",
@@ -144,7 +144,7 @@
           ]
         },
         {
-          "Name": "Export",
+          "Name": "Configuration",
           "Steps": [
             {
               "Type": "AdminMenuDeploymentStep",
