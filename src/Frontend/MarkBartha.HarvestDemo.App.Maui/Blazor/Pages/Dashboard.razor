@@ -1,5 +1,6 @@
 @page "/"
 @attribute [Authorize]
+@using System.Threading
 @implements IAsyncDisposable
 @inject AppState AppState
 @inject TodoState TodoState
@@ -13,25 +14,7 @@
 
 <main class="content-container page-padding pb-32 md:pb-6 flex-1">
     <div class="max-w-5xl mx-auto w-full space-y-6">
-        @* <UseGetToDos Context="result"> *@
-        @*     <ChildContent> *@
-        @*         <ul> *@
-        @*             @foreach (var item in result.ToDo!) *@
-        @*             { *@
-        @*                 <li>@item.ContentItemId (@item.DisplayText)</li> *@
-        @*             } *@
-        @*         </ul> *@
-        @*     </ChildContent> *@
-        @*     <ErrorContent> *@
-        @*         Something went wrong ...<br /> *@
-        @*         @result.First().Message *@
-        @*     </ErrorContent> *@
-        @*     <LoadingContent> *@
-        @*         Loading ... *@
-        @*     </LoadingContent> *@
-        @* </UseGetToDos> *@
-        
-        
+
         <section class="hidden md:block">
             <AddTodoInput IsInline="true"
                           Value="@newTodoText"
@@ -124,13 +107,13 @@
         return true;
     }
 
-    private Task ToggleTodoAsync(Guid id)
+    private Task ToggleTodoAsync(string id)
     {
         var token = _cts?.Token ?? CancellationToken.None;
         return TodoState.ToggleAsync(id, token);
     }
 
-    private Task DeleteTodoAsync(Guid id)
+    private Task DeleteTodoAsync(string id)
     {
         var token = _cts?.Token ?? CancellationToken.None;
         return TodoState.DeleteAsync(id, token);

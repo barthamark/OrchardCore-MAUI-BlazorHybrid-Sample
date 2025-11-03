@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Duende.IdentityModel.OidcClient.Browser;
 using IBrowser = Duende.IdentityModel.OidcClient.Browser.IBrowser;
 

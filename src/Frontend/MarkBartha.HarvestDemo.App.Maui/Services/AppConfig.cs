@@ -1,4 +1,6 @@
-﻿namespace MarkBartha.HarvestDemo.App.Maui.Services;
+﻿using Microsoft.Maui.Devices;
+
+namespace MarkBartha.HarvestDemo.App.Maui.Services;
 
 public enum EnvironmentType
 {

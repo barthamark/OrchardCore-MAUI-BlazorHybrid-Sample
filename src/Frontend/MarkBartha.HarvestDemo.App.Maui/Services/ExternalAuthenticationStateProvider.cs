@@ -1,7 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Duende.IdentityModel.OidcClient;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Maui.Storage;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services;
 

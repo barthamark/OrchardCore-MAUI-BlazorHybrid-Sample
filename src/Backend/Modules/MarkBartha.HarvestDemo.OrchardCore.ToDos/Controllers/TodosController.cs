@@ -56,7 +56,7 @@ public class TodosController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateTodoRequest request)
+    public async Task<IActionResult> Post([FromBody] CreateTodoRequest? request)
     {
         var userId = await GetCurrentUserIdAsync();
         if (userId is null) return Unauthorized();
@@ -87,14 +87,14 @@ public class TodosController : ControllerBase
     }
 
     [HttpPatch("{id}/completion")]
-    public async Task<IActionResult> SetCompletion(string id, [FromBody] UpdateCompletionRequest request)
+    public async Task<IActionResult> SetCompletion(string id, [FromBody] UpdateCompletionRequest? request)
     {
         var userId = await GetCurrentUserIdAsync();
         if (userId is null) return Unauthorized();
 
         if (request is null) return BadRequest();
 
-        var todo = await _contentManager.GetAsync(id);
+        var todo = await _contentManager.GetAsync(id, VersionOptions.DraftRequired);
         if (todo is null || todo.Owner != userId) return NotFound();
 
         todo.Alter<Todo>(part => part.Done.Value = request.IsCompleted);
@@ -128,7 +128,7 @@ public class TodosController : ControllerBase
             Title = todo.DisplayText,
         };
 
-    private async Task<string> GetCurrentUserIdAsync()
+    private async Task<string?> GetCurrentUserIdAsync()
     {
         var user = await _userService.GetAuthenticatedUserAsync(User) as User;
         return user?.UserId;

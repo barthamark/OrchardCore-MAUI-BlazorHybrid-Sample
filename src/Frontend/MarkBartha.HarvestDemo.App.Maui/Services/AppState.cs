@@ -1,23 +1,25 @@
 using System;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using MarkBartha.HarvestDemo.App.Maui.GraphQL;
 using MarkBartha.HarvestDemo.Domain.Models;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services;
 
-public class AppState
+public class AppState : IDisposable
 {
-    private readonly IHarvestDemoClient _harvestDemoClient;
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ILogger<AppState> _logger;
     private readonly SemaphoreSlim _userProfileLock = new(1, 1);
 
-    public AppState(IHarvestDemoClient harvestDemoClient, ILogger<AppState> logger)
+    public AppState(AuthenticationStateProvider authenticationStateProvider, ILogger<AppState> logger)
     {
-        _harvestDemoClient = harvestDemoClient;
+        _authenticationStateProvider = authenticationStateProvider;
         _logger = logger;
+
+        _authenticationStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChangedAsync;
     }
 
     public UserProfile? UserProfile { get; private set; }
@@ -28,13 +30,12 @@ public class AppState
 
     public async Task EnsureUserProfileAsync(CancellationToken cancellationToken = default)
     {
-        if (UserProfile is not null)
+        if (UserProfile is not null || IsUserProfileLoading)
         {
             return;
         }
 
         await _userProfileLock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
         try
         {
             if (UserProfile is not null)
@@ -46,35 +47,13 @@ public class AppState
             UserProfileError = null;
             NotifyStateChanged();
 
-            var result = await _harvestDemoClient.GetMe.ExecuteAsync(cancellationToken).ConfigureAwait(false);
-
-            if (result.Errors?.Count > 0)
-            {
-                var message = string.Join(", ", result.Errors.Select(error => error.Message));
-                throw new InvalidOperationException(
-                    string.IsNullOrWhiteSpace(message)
-                        ? "Unknown GraphQL error while loading user profile."
-                        : message);
-            }
-
-            var me = result.Data?.Me;
-            if (me is null)
-            {
-                _logger.LogWarning("GraphQL 'me' query returned no user data.");
-                return;
-            }
-
-            SetUserProfile(new UserProfile
-            {
-                UserId = me.UserId,
-                UserName = me.UserName,
-                Email = me.Email ?? string.Empty,
-            });
+            var authenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+            UpdateUserProfile(authenticationState.User);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             UserProfileError = ex;
-            _logger.LogError(ex, "Failed to load the current user profile.");
+            _logger.LogError(ex, "Failed to load the current user profile from authentication state.");
         }
         finally
         {
@@ -84,11 +63,57 @@ public class AppState
         }
     }
 
-    public void SetUserProfile(UserProfile profile)
+    public void SetUserProfile(UserProfile? profile)
     {
         UserProfile = profile;
         NotifyStateChanged();
     }
 
+    private async Task HandleAuthenticationStateChangedAsync(Task<AuthenticationState> authenticationStateTask)
+    {
+        try
+        {
+            var authenticationState = await authenticationStateTask.ConfigureAwait(false);
+            UpdateUserProfile(authenticationState.User);
+        }
+        catch (Exception ex)
+        {
+            UserProfileError = ex;
+            _logger.LogError(ex, "Failed to update the user profile after an authentication change.");
+            NotifyStateChanged();
+        }
+    }
+
+    private void UpdateUserProfile(ClaimsPrincipal principal)
+    {
+        if (principal.Identity?.IsAuthenticated != true)
+        {
+            UserProfileError = null;
+            SetUserProfile(null);
+            return;
+        }
+
+        var userId = GetClaimValue(principal, ClaimTypes.NameIdentifier) ?? GetClaimValue(principal, "sub") ?? string.Empty;
+        var userName = GetClaimValue(principal, ClaimTypes.Name) ?? principal.Identity?.Name ?? string.Empty;
+        var email = GetClaimValue(principal, ClaimTypes.Email) ?? string.Empty;
+
+        UserProfileError = null;
+        SetUserProfile(new UserProfile
+        {
+            UserId = userId,
+            UserName = userName,
+            Email = email,
+        });
+    }
+
+    private static string? GetClaimValue(ClaimsPrincipal principal, string claimType) =>
+        principal.FindFirst(claimType)?.Value;
+
     private void NotifyStateChanged() => OnChanged?.Invoke(this, EventArgs.Empty);
+
+    public void Dispose()
+    {
+        _authenticationStateProvider.AuthenticationStateChanged -= HandleAuthenticationStateChangedAsync;
+        _userProfileLock.Dispose();
+    }
 }

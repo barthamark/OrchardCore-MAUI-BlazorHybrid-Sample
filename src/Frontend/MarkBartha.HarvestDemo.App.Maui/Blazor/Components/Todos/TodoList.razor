@@ -21,8 +21,8 @@
 
 @code {
     [Parameter] public IReadOnlyList<TodoItem>? Items { get; set; }
-    [Parameter] public EventCallback<Guid> Toggle { get; set; }
-    [Parameter] public EventCallback<Guid> Delete { get; set; }
+    [Parameter] public EventCallback<string> Toggle { get; set; }
+    [Parameter] public EventCallback<string> Delete { get; set; }
 
     private bool HasItems => Items is { Count: > 0 };
 }

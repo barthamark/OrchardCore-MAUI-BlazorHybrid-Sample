@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MarkBartha.HarvestDemo.Domain.Models;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
@@ -43,11 +48,11 @@ public class InMemoryTodoService : ITodoService
         return Task.FromResult(item);
     }
 
-    public Task<TodoItem?> SetCompletionAsync(Guid id, bool isCompleted, CancellationToken cancellationToken = default)
+    public Task<TodoItem?> SetCompletionAsync(string id, bool isCompleted, CancellationToken cancellationToken = default)
     {
         lock (_lock)
         {
-            var existing = _items.FirstOrDefault(x => x.Id == id);
+            var existing = _items.FirstOrDefault(x => string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase));
             if (existing is null)
             {
                 return Task.FromResult<TodoItem?>(null);
@@ -60,11 +65,11 @@ public class InMemoryTodoService : ITodoService
         }
     }
 
-    public Task DeleteTodoAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task DeleteTodoAsync(string id, CancellationToken cancellationToken = default)
     {
         lock (_lock)
         {
-            _items.RemoveAll(x => x.Id == id);
+            _items.RemoveAll(x => string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
         return Task.CompletedTask;

@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using MarkBartha.HarvestDemo.App.Maui.GraphQL;
+using MarkBartha.HarvestDemo.App.Maui.Services;
 using MarkBartha.HarvestDemo.Domain.Models;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
@@ -13,16 +13,17 @@ namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
 public class TodoApiService : ITodoService
 {
     private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
-    private readonly HttpClient _httpClient;
+    private readonly AuthenticatedHttpClient _authenticatedHttpClient;
 
-    public TodoApiService(HttpClient httpClient)
+    public TodoApiService(AuthenticatedHttpClient authenticatedHttpClient)
     {
-        _httpClient = httpClient;
+        _authenticatedHttpClient = authenticatedHttpClient;
     }
 
     public async Task<IReadOnlyList<TodoItem>> GetTodosAsync(CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync("api/todos", cancellationToken);
+        var client = await _authenticatedHttpClient.GetClientAsync();
+        var response = await client.GetAsync("api/todos", cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         var todos = await response.Content.ReadFromJsonAsync<List<TodoItem>>(SerializerOptions, cancellationToken)
                     ?? new List<TodoItem>();
@@ -32,7 +33,8 @@ public class TodoApiService : ITodoService
     public async Task<TodoItem> AddTodoAsync(string title, CancellationToken cancellationToken = default)
     {
         var payload = new { title };
-        var response = await _httpClient.PostAsJsonAsync("api/todos", payload, SerializerOptions, cancellationToken);
+        var client = await _authenticatedHttpClient.GetClientAsync();
+        var response = await client.PostAsJsonAsync("api/todos", payload, SerializerOptions, cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         var created = await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
         if (created is null)
@@ -43,17 +45,21 @@ public class TodoApiService : ITodoService
         return created;
     }
 
-    public async Task<TodoItem?> SetCompletionAsync(Guid id, bool isCompleted, CancellationToken cancellationToken = default)
+    public async Task<TodoItem?> SetCompletionAsync(string id, bool isCompleted, CancellationToken cancellationToken = default)
     {
         var payload = new { isCompleted };
-        var response = await _httpClient.PatchAsync($"api/todos/{id}/completion", JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
+        var client = await _authenticatedHttpClient.GetClientAsync();
+        var encodedId = Uri.EscapeDataString(id);
+        var response = await client.PatchAsync($"api/todos/{encodedId}/completion", JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
         return await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
     }
 
-    public async Task DeleteTodoAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task DeleteTodoAsync(string id, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.DeleteAsync($"api/todos/{id}", cancellationToken);
+        var client = await _authenticatedHttpClient.GetClientAsync();
+        var encodedId = Uri.EscapeDataString(id);
+        var response = await client.DeleteAsync($"api/todos/{encodedId}", cancellationToken);
         await EnsureSuccessStatusCode(response, cancellationToken);
     }
 

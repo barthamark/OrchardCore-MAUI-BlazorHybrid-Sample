@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MarkBartha.HarvestDemo.Domain.Models;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
@@ -85,12 +90,12 @@ public class TodoState : IDisposable
         }
     }
 
-    public async Task ToggleAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task ToggleAsync(string id, CancellationToken cancellationToken = default)
     {
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            var existing = _items.FirstOrDefault(t => t.Id == id);
+            var existing = _items.FirstOrDefault(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase));
             if (existing is null)
             {
                 return;
@@ -112,12 +117,12 @@ public class TodoState : IDisposable
         }
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
         await _gate.WaitAsync(cancellationToken);
         try
         {
-            var removed = _items.RemoveAll(t => t.Id == id) > 0;
+            var removed = _items.RemoveAll(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase)) > 0;
 
             if (removed)
             {
