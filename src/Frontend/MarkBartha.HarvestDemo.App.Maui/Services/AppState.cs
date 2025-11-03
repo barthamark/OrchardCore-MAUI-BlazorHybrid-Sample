@@ -93,9 +93,9 @@ public class AppState : IDisposable
             return;
         }
 
-        var userId = GetClaimValue(principal, ClaimTypes.NameIdentifier) ?? GetClaimValue(principal, "sub") ?? string.Empty;
+        var userId = GetClaimValue(principal, "sub") ?? string.Empty;
         var userName = GetClaimValue(principal, ClaimTypes.Name) ?? principal.Identity?.Name ?? string.Empty;
-        var email = GetClaimValue(principal, ClaimTypes.Email) ?? string.Empty;
+        var email = GetClaimValue(principal, "email") ?? string.Empty;
 
         UserProfileError = null;
         SetUserProfile(new UserProfile

@@ -32,7 +32,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(services => new OidcClient(new OidcClientOptions
         {
             Authority = AppConfig.BackendBaseUrl,
-            Scope = "openid offline_access email",
+            Scope = "openid offline_access email profile",
             ClientId = "harvestdemo.maui",
             RedirectUri = AppConfig.CallbackUrl,
             PostLogoutRedirectUri = AppConfig.CallbackUrl,
