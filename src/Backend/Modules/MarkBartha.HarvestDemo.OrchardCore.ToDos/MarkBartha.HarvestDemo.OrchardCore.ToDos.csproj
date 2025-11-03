@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="OrchardCore.ContentFields" Version="2.2.1" />
+        <PackageReference Include="OrchardCore.Module.Targets" Version="2.2.1"/>
+        <PackageReference Include="OrchardCore.ContentManagement" Version="2.2.1"/>
+        <PackageReference Include="OrchardCore.ContentTypes.Abstractions" Version="2.2.1"/>
+        <PackageReference Include="OrchardCore.DisplayManagement" Version="2.2.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\MarkBartha.HarvestDemo.Domain\MarkBartha.HarvestDemo.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

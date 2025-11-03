@@ -23,7 +23,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MarkBartha.HarvestDemo.OrchardCore.Theme\MarkBartha.HarvestDemo.OrchardCore.Theme.csproj" />
+      <ProjectReference Include="..\Modules\MarkBartha.HarvestDemo.OrchardCore.ToDos\MarkBartha.HarvestDemo.OrchardCore.ToDos.csproj" />
+      <ProjectReference Include="..\Themes\MarkBartha.HarvestDemo.OrchardCore.Theme\MarkBartha.HarvestDemo.OrchardCore.Theme.csproj" />
     </ItemGroup>
 
 </Project>
