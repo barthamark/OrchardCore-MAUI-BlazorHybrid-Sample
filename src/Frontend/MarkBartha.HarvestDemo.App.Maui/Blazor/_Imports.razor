@@ -9,6 +9,7 @@
 @using MarkBartha.HarvestDemo.App.Maui.Blazor
 @using MarkBartha.HarvestDemo.App.Maui.Services
 @using MarkBartha.HarvestDemo.App.Maui.Services.Todos
+@using MarkBartha.HarvestDemo.App.Maui.Services.UserProfiles
 @using MarkBartha.HarvestDemo.App.Maui.Blazor.Components
 @using MarkBartha.HarvestDemo.App.Maui.Blazor.Components.Todos
 @using MarkBartha.HarvestDemo.Domain.Models
@@ -17,5 +18,4 @@
 @using Microsoft.AspNetCore.Authorization
 @inject ExternalAuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
-@* @inject IUserProfileService UserProfileService *@
-@inject AppState AppState
+@inject UserProfileState UserProfileState

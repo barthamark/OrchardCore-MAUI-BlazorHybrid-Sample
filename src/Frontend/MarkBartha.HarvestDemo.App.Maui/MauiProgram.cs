@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using Duende.IdentityModel.OidcClient;
 using MarkBartha.HarvestDemo.App.Maui.Services;
+using MarkBartha.HarvestDemo.App.Maui.Services.UserProfiles;
 using MarkBartha.HarvestDemo.App.Maui.Services.Todos;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,8 @@ public static class MauiProgram
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        builder.Services.AddScoped<AppState>();
+        builder.Services.AddScoped<IUserProfileService, UserProfileApiService>();
+        builder.Services.AddScoped<UserProfileState>();
         builder.Services.AddScoped<ITodoService, TodoApiService>();
         builder.Services.AddScoped<TodoState>();
 

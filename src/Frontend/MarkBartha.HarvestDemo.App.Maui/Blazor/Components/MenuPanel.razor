@@ -1,6 +1,5 @@
 @using Microsoft.AspNetCore.Components
 
-@inject AppState AppState
 @inject NavigationManager Navigation
 @implements IDisposable
 
@@ -68,12 +67,12 @@
     [Parameter]
     public EventCallback OnSignOut { get; set; }
 
-    private string UserName => AppState.UserProfile?.UserName ?? "Harvest Demo";
-    private string UserEmail => AppState.UserProfile?.Email ?? "orchard.harvest@example.com";
+    private string UserName => UserProfileState.Profile?.UserName ?? "Harvest Demo";
+    private string UserEmail => UserProfileState.Profile?.Email ?? "orchard.harvest@example.com";
 
     protected override void OnInitialized()
     {
-        AppState.OnChanged += HandleAppStateChanged;
+        UserProfileState.StateChanged += HandleUserProfileChanged;
     }
 
     private Task HandleClose()
@@ -100,13 +99,13 @@
         Navigation.NavigateTo("/account", forceLoad: false);
     }
 
-    private void HandleAppStateChanged(object? sender, EventArgs args)
+    private void HandleUserProfileChanged()
     {
         _ = InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        AppState.OnChanged -= HandleAppStateChanged;
+        UserProfileState.StateChanged -= HandleUserProfileChanged;
     }
 }

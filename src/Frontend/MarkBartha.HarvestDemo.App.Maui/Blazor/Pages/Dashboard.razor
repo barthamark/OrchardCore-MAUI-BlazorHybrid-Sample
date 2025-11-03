@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @using System.Threading
 @implements IAsyncDisposable
-@inject AppState AppState
 @inject TodoState TodoState
 
 <PageTitle>Tasks</PageTitle>
@@ -68,7 +67,7 @@
         _cts = new CancellationTokenSource();
         TodoState.StateChanged += HandleTodoStateChanged;
 
-        await AppState.EnsureUserProfileAsync(_cts.Token);
+        await UserProfileState.EnsureLoadedAsync(_cts.Token);
         await TodoState.InitializeAsync(_cts.Token);
     }
 
