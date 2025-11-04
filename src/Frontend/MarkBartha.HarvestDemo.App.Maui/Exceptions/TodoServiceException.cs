@@ -1,6 +1,6 @@
 using System;
 
-namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
+namespace MarkBartha.HarvestDemo.App.Maui.Exceptions;
 
 public class TodoServiceException : Exception
 {

@@ -1,18 +1,17 @@
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using MarkBartha.HarvestDemo.App.Maui.Exceptions;
 using MarkBartha.HarvestDemo.Domain.Models;
+using static MarkBartha.HarvestDemo.App.Maui.Constants.JsonOptions;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services.UserProfiles;
 
-public class UserProfileApiService : IUserProfileService
+public class UserProfileService : IUserProfileService
 {
-    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
     private readonly AuthenticatedHttpClient _authenticatedHttpClient;
 
-    public UserProfileApiService(AuthenticatedHttpClient authenticatedHttpClient)
+    public UserProfileService(AuthenticatedHttpClient authenticatedHttpClient)
     {
         _authenticatedHttpClient = authenticatedHttpClient;
     }
@@ -25,12 +24,7 @@ public class UserProfileApiService : IUserProfileService
         if (response.IsSuccessStatusCode)
         {
             var profile = await response.Content.ReadFromJsonAsync<UserProfile>(SerializerOptions, cancellationToken);
-            if (profile is null)
-            {
-                throw new UserProfileServiceException("The server returned an empty user profile payload.");
-            }
-
-            return profile;
+            return profile ?? throw new UserProfileServiceException("The server returned an empty user profile payload.");
         }
 
         var message = await response.Content.ReadAsStringAsync(cancellationToken);

@@ -15,7 +15,7 @@
     <div class="max-w-5xl mx-auto w-full space-y-6">
 
         <section class="hidden md:block">
-            <AddTodoInput IsInline="true"
+            <AddTodo IsInline="true"
                           Value="@newTodoText"
                           ValueChanged="HandleDesktopValueChanged"
                           OnSubmit="AddTodoFromDesktopAsync"
@@ -24,7 +24,7 @@
         </section>
 
         <section class="md:hidden @(isAddingMobile ? string.Empty : "hidden")">
-            <AddTodoInput IsInline="false"
+            <AddTodo IsInline="false"
                           Value="@newTodoMobileText"
                           ValueChanged="HandleMobileValueChanged"
                           OnSubmit="AddTodoFromMobileAsync"
@@ -59,8 +59,8 @@
     private string newTodoMobileText = string.Empty;
     private bool isAddingMobile;
 
-    private AddTodoInput? desktopAddRef;
-    private AddTodoInput? mobileAddRef;
+    private AddTodo? desktopAddRef;
+    private AddTodo? mobileAddRef;
 
     protected override async Task OnInitializedAsync()
     {

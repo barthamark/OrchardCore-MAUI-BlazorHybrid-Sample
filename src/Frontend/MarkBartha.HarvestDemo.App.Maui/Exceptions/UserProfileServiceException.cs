@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace MarkBartha.HarvestDemo.App.Maui.Services.UserProfiles;
+namespace MarkBartha.HarvestDemo.App.Maui.Exceptions;
 
 public class UserProfileServiceException : Exception
 {

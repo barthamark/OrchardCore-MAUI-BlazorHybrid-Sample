@@ -4,10 +4,10 @@
 @inject ExternalAuthenticationStateProvider AuthStateProvider
 
 <div class="min-h-screen bg-surface-1 flex flex-col relative">
-    <AppShellHeader Title="@headerTitle"
+    <Header Title="@headerTitle"
                     OnMenu="OpenMenu" />
 
-    <MenuPanel IsOpen="@isMenuOpen"
+    <Sidebar IsOpen="@isSidebarOpen"
                OnClose="CloseMenu"
                OnSignOut="SignOutAsync" />
 
@@ -17,7 +17,7 @@
 </div>
 
 @code {
-    private bool isMenuOpen;
+    private bool isSidebarOpen;
     private string headerTitle = "Tasks";
 
     protected override void OnInitialized()
@@ -43,18 +43,18 @@
 
     private void OpenMenu()
     {
-        if (!isMenuOpen)
+        if (!isSidebarOpen)
         {
-            isMenuOpen = true;
+            isSidebarOpen = true;
             StateHasChanged();
         }
     }
 
     private void CloseMenu()
     {
-        if (isMenuOpen)
+        if (isSidebarOpen)
         {
-            isMenuOpen = false;
+            isSidebarOpen = false;
             StateHasChanged();
         }
     }

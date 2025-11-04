@@ -55,9 +55,9 @@ public static class MauiProgram
                 new MediaTypeWithQualityHeaderValue("application/json"));
         });
 
-        builder.Services.AddScoped<IUserProfileService, UserProfileApiService>();
+        builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<UserProfileState>();
-        builder.Services.AddScoped<ITodoService, TodoApiService>();
+        builder.Services.AddScoped<ITodoService, TodoService>();
         builder.Services.AddScoped<TodoState>();
 
         return builder.Build();
