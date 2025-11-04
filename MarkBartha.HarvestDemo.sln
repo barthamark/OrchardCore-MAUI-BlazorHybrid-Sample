@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		AGENTS.md = AGENTS.md
 		.gitignore = .gitignore
 		Reset-Local.ps1 = Reset-Local.ps1
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{A18C8B58-D417-48BC-BB6F-E63C264EB584}"

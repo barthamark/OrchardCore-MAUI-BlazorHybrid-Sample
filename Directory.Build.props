@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup Condition="'$(AndroidSdkDirectory)' == ''">
+        <AndroidSdkDirectory>
+            $([System.Environment]::GetEnvironmentVariable('ANDROID_HOME'))
+        </AndroidSdkDirectory>
+    </PropertyGroup>
+</Project>

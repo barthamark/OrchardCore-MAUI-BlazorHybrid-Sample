@@ -20,24 +20,25 @@ public class TodoService : ITodoService
     public async Task<IReadOnlyList<TodoItem>> GetTodosAsync(CancellationToken cancellationToken = default)
     {
         var client = await _authenticatedHttpClient.GetClientAsync();
-        var response = await client.GetAsync("todos", cancellationToken);
-        await EnsureSuccessStatusCode(response, cancellationToken);
+        using var response = await client.GetAsync("todos", cancellationToken);
+        await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
 
-        return await response.Content.ReadFromJsonAsync<List<TodoItem>>(SerializerOptions, cancellationToken) ?? [];
+        var todos = await response.Content.ReadFromJsonAsync<List<TodoItem>>(SerializerOptions, cancellationToken);
+        return todos ?? [];
     }
 
     public async Task<TodoItem> AddTodoAsync(string title, CancellationToken cancellationToken = default)
     {
         var payload = new { title };
         var client = await _authenticatedHttpClient.GetClientAsync();
-        var response = await client.PostAsJsonAsync("todos", payload, SerializerOptions, cancellationToken);
-        await EnsureSuccessStatusCode(response, cancellationToken);
+        using var response = await client.PostAsJsonAsync("todos", payload, SerializerOptions, cancellationToken);
+        await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
 
         var created = await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
         return created ?? throw new TodoServiceException("The server returned an empty response while creating a todo item.");
     }
 
-    public async Task<TodoItem> SetCompletionAsync(
+    public async Task<TodoItem?> SetCompletionAsync(
         string id,
         bool isCompleted,
         CancellationToken cancellationToken = default)
@@ -46,9 +47,10 @@ public class TodoService : ITodoService
         var client = await _authenticatedHttpClient.GetClientAsync();
         var encodedId = Uri.EscapeDataString(id);
 
-        var response = await client.PatchAsync($"todos/{encodedId}/completion",
+        using var response = await client.PatchAsync(
+            $"todos/{encodedId}/completion",
             JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
-        await EnsureSuccessStatusCode(response, cancellationToken);
+        await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
 
         return await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
     }
@@ -58,15 +60,10 @@ public class TodoService : ITodoService
         var client = await _authenticatedHttpClient.GetClientAsync();
         var encodedId = Uri.EscapeDataString(id);
 
-        var response = await client.DeleteAsync($"todos/{encodedId}", cancellationToken);
-        await EnsureSuccessStatusCode(response, cancellationToken);
+        using var response = await client.DeleteAsync($"todos/{encodedId}", cancellationToken);
+        await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
     }
 
-    private static async Task EnsureSuccessStatusCode(HttpResponseMessage response, CancellationToken cancellationToken)
-    {
-        if (response.IsSuccessStatusCode) return;
-
-        var message = await response.Content.ReadAsStringAsync(cancellationToken);
-        throw new TodoServiceException($"The server returned status {(int)response.StatusCode}: {message}");
-    }
+    private static Exception CreateServiceException(HttpResponseMessage response, string details) =>
+        new TodoServiceException($"The server returned status {(int)response.StatusCode}: {details}");
 }

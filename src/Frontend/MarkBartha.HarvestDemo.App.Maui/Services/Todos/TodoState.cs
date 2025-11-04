@@ -49,24 +49,22 @@ public class TodoState : IDisposable
         _isInitialized = true;
     }
 
-    public async Task ReloadAsync(CancellationToken cancellationToken = default)
-    {
-        await _gate.WaitAsync(cancellationToken);
-        try
+    public Task ReloadAsync(CancellationToken cancellationToken = default) =>
+        RunSynchronizedAsync(async ct =>
         {
             IsLoading = true;
-            var todos = await _todoService.GetTodosAsync(cancellationToken);
-            _items.Clear();
-            _items.AddRange(todos.OrderByDescending(t => t.CreatedAt));
-            UpdateSnapshotUnsafe();
-        }
-        finally
-        {
-            IsLoading = false;
-            _gate.Release();
-            NotifyStateChanged();
-        }
-    }
+            try
+            {
+                var todos = await _todoService.GetTodosAsync(ct);
+                _items.Clear();
+                _items.AddRange(todos.OrderByDescending(t => t.CreatedAt));
+                UpdateSnapshotUnsafe();
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }, cancellationToken);
 
     public async Task AddAsync(string title, CancellationToken cancellationToken = default)
     {
@@ -76,24 +74,16 @@ public class TodoState : IDisposable
             return;
         }
 
-        await _gate.WaitAsync(cancellationToken);
-        try
+        await RunSynchronizedAsync(async ct =>
         {
-            var created = await _todoService.AddTodoAsync(trimmed, cancellationToken);
+            var created = await _todoService.AddTodoAsync(trimmed, ct);
             _items.Insert(0, created);
             UpdateSnapshotUnsafe();
-        }
-        finally
-        {
-            _gate.Release();
-            NotifyStateChanged();
-        }
+        }, cancellationToken);
     }
 
-    public async Task ToggleAsync(string id, CancellationToken cancellationToken = default)
-    {
-        await _gate.WaitAsync(cancellationToken);
-        try
+    public Task ToggleAsync(string id, CancellationToken cancellationToken = default) =>
+        RunSynchronizedAsync(async ct =>
         {
             var existing = _items.FirstOrDefault(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase));
             if (existing is null)
@@ -102,33 +92,34 @@ public class TodoState : IDisposable
             }
 
             var newValue = !existing.IsCompleted;
-            var updated = await _todoService.SetCompletionAsync(id, newValue, cancellationToken) ?? existing.WithCompletion(newValue);
+            var updated = await _todoService.SetCompletionAsync(id, newValue, ct)
+                          ?? existing.WithCompletion(newValue);
             var index = _items.IndexOf(existing);
             if (index >= 0)
             {
                 _items[index] = updated;
                 UpdateSnapshotUnsafe();
             }
-        }
-        finally
-        {
-            _gate.Release();
-            NotifyStateChanged();
-        }
-    }
+        }, cancellationToken);
 
-    public async Task DeleteAsync(string id, CancellationToken cancellationToken = default)
-    {
-        await _gate.WaitAsync(cancellationToken);
-        try
+    public Task DeleteAsync(string id, CancellationToken cancellationToken = default) =>
+        RunSynchronizedAsync(async ct =>
         {
             var removed = _items.RemoveAll(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase)) > 0;
 
             if (removed)
             {
-                await _todoService.DeleteTodoAsync(id, cancellationToken);
+                await _todoService.DeleteTodoAsync(id, ct);
                 UpdateSnapshotUnsafe();
             }
+        }, cancellationToken);
+
+    private async Task RunSynchronizedAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await action(cancellationToken);
         }
         finally
         {

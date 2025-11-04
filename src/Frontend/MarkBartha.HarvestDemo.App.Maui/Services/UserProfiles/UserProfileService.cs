@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,16 +23,15 @@ public class UserProfileService : IUserProfileService
         var client = await _authenticatedHttpClient.GetClientAsync();
         using var response = await client.GetAsync("user-profile", cancellationToken);
 
-        if (response.IsSuccessStatusCode)
-        {
-            var profile = await response.Content.ReadFromJsonAsync<UserProfile>(SerializerOptions, cancellationToken);
-            return profile ?? throw new UserProfileServiceException("The server returned an empty user profile payload.");
-        }
+        await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
 
-        var message = await response.Content.ReadAsStringAsync(cancellationToken);
-        throw new UserProfileServiceException($"Failed to load the user profile. Server returned {(int)response.StatusCode}: {message}")
+        var profile = await response.Content.ReadFromJsonAsync<UserProfile>(SerializerOptions, cancellationToken);
+        return profile ?? throw new UserProfileServiceException("The server returned an empty user profile payload.");
+    }
+
+    private static Exception CreateServiceException(HttpResponseMessage response, string details) =>
+        new UserProfileServiceException($"Failed to load the user profile. Server returned {(int)response.StatusCode}: {details}")
         {
             StatusCode = response.StatusCode,
         };
-    }
 }

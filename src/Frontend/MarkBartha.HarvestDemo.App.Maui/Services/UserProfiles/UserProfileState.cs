@@ -57,18 +57,18 @@ public sealed class UserProfileState : IDisposable
             return;
         }
 
-        await ReloadAsync(cancellationToken).ConfigureAwait(false);
+        await ReloadAsync(cancellationToken);
     }
 
     public async Task ReloadAsync(CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await _gate.WaitAsync(cancellationToken);
         try
         {
             IsLoading = true;
             Error = null;
 
-            var profile = await _userProfileService.GetUserProfileAsync(cancellationToken).ConfigureAwait(false);
+            var profile = await _userProfileService.GetUserProfileAsync(cancellationToken);
             Profile = profile;
             _isInitialized = true;
         }
@@ -98,14 +98,14 @@ public sealed class UserProfileState : IDisposable
     {
         try
         {
-            var authenticationState = await authenticationStateTask.ConfigureAwait(false);
+            var authenticationState = await authenticationStateTask;
             if (authenticationState.User.Identity?.IsAuthenticated != true)
             {
                 ClearProfile();
                 return;
             }
 
-            await ReloadAsync(CancellationToken.None).ConfigureAwait(false);
+            await ReloadAsync(CancellationToken.None);
         }
         catch (OperationCanceledException)
         {

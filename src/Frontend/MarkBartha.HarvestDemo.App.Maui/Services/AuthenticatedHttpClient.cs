@@ -18,10 +18,11 @@ public class AuthenticatedHttpClient
     public async Task<HttpClient> GetClientAsync()
     {
         var token = await _authStateProvider.GetAccessTokenAsync();
-        if (!string.IsNullOrEmpty(token) && _httpClient.DefaultRequestHeaders.Authorization?.Parameter != token)
+        if (token is { Length: > 0 } tokenValue &&
+            _httpClient.DefaultRequestHeaders.Authorization?.Parameter != tokenValue)
         {
             _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
+                new AuthenticationHeaderValue("Bearer", tokenValue);
         }
 
         return _httpClient;
