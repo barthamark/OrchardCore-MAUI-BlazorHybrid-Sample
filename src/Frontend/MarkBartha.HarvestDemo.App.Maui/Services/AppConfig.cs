@@ -25,7 +25,7 @@ public static class AppConfig
 
     public static string CallbackUrl => DeviceInfo.Current.Platform == DevicePlatform.WinUI
         ? "http://127.0.0.1:7605/callback/"
-        : "forespend://callback";
+        : "harvestdemo://callback";
 
     public static bool IsDevelopment() => Environment == EnvironmentType.Development;
 }
