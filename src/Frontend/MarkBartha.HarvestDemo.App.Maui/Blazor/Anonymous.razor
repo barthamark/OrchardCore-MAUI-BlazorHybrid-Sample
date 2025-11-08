@@ -1,16 +1,25 @@
-﻿<div class="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4">
-    <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center space-y-6">
-        <div class="space-y-2">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome to Forespend</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-                Please log in to continue.
-            </p>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md space-y-8 text-center">
+        <div class="space-y-4">
+            <div class="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center bg-brand text-white">
+                <i class="icon-log-in h-8 w-8" aria-hidden="true"></i>
+            </div>
+            <div class="space-y-2">
+                <p class="text-sm font-semibold tracking-wide text-brand uppercase">Orchard Harvest 2025 Demo App</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Please log in</h1>
+            </div>
         </div>
 
-        <button @onclick="StartLogin"
-                class="w-full py-2 px-4 text-sm font-medium text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-800 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/50 transition duration-200">
-            Log In with your Account
-        </button>
+        <div class="card space-y-4">
+            <button @onclick="StartLogin"
+                    class="btn btn-primary w-full justify-center gap-2 text-base">
+                <i class="icon-shield-check h-5 w-5" aria-hidden="true"></i>
+                Continue to login
+            </button>
+            <p class="text-sm text-[color:var(--color-text-muted)]">
+                You will be redirected to the secure Harvest Demo App sign-in page.
+            </p>
+        </div>
     </div>
 </div>
 
