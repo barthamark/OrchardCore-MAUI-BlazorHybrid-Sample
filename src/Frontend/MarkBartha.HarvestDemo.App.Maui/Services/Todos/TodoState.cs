@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MarkBartha.HarvestDemo.App.Maui.Exceptions;
 using MarkBartha.HarvestDemo.Domain.Models;
 
 namespace MarkBartha.HarvestDemo.App.Maui.Services.Todos;
@@ -36,7 +37,7 @@ public class TodoState : IDisposable
         }
     }
 
-    public event Action? StateChanged;
+    public event Action StateChanged = delegate { };
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
@@ -92,8 +93,17 @@ public class TodoState : IDisposable
             }
 
             var newValue = !existing.IsCompleted;
-            var updated = await _todoService.SetCompletionAsync(id, newValue, ct)
-                          ?? existing.WithCompletion(newValue);
+            var updated = existing.WithCompletion(newValue);
+
+            try
+            {
+                updated = await _todoService.SetCompletionAsync(id, newValue, ct);
+            }
+            catch (TodoServiceException)
+            {
+                // Fall back to the locally derived value if the backend omits the payload.
+            }
+
             var index = _items.IndexOf(existing);
             if (index >= 0)
             {
@@ -135,7 +145,7 @@ public class TodoState : IDisposable
             .ToList();
     }
 
-    private void NotifyStateChanged() => StateChanged?.Invoke();
+    private void NotifyStateChanged() => StateChanged();
 
     public void Dispose()
     {

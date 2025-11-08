@@ -38,7 +38,7 @@ public class TodoService : ITodoService
         return created ?? throw new TodoServiceException("The server returned an empty response while creating a todo item.");
     }
 
-    public async Task<TodoItem?> SetCompletionAsync(
+    public async Task<TodoItem> SetCompletionAsync(
         string id,
         bool isCompleted,
         CancellationToken cancellationToken = default)
@@ -52,7 +52,8 @@ public class TodoService : ITodoService
             JsonContent.Create(payload, options: SerializerOptions), cancellationToken);
         await response.EnsureSuccessAsync(CreateServiceException, cancellationToken);
 
-        return await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
+        var updated = await response.Content.ReadFromJsonAsync<TodoItem>(SerializerOptions, cancellationToken);
+        return updated ?? throw new TodoServiceException("The server returned an empty response while updating a todo item.");
     }
 
     public async Task DeleteTodoAsync(string id, CancellationToken cancellationToken = default)

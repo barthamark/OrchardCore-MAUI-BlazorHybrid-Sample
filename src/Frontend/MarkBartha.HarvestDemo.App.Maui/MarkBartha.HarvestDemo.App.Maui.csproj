@@ -18,6 +18,7 @@
         <UseMaui>true</UseMaui>
         <SingleProject>true</SingleProject>
         <EnableDefaultCssItems>false</EnableDefaultCssItems>
+        <Nullable>disable</Nullable>
 
         <!-- Display name -->
         <ApplicationTitle>Orchard Harvest 2025 Demo App</ApplicationTitle>

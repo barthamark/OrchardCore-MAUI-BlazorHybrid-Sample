@@ -16,7 +16,7 @@ public sealed class LoopbackHttpListener : IDisposable
     private int Port { get; }
     public string RedirectUri => $"http://127.0.0.1:{Port}{(_path != null ? $"/{_path}/" : "/")}";
 
-    public LoopbackHttpListener(int? port = null, string path = null)
+    public LoopbackHttpListener(Nullable<int> port = null, string path = null)
     {
         _path = path;
         Port = port ?? GetRandomUnusedPort();
@@ -61,7 +61,8 @@ public sealed class LoopbackHttpListener : IDisposable
             await response.OutputStream.WriteAsync(buffer, _cts.Token);
             response.OutputStream.Close();
 
-            return ctx.Request.Url?.ToString();
+            var callbackUrl = ctx.Request.Url;
+            return callbackUrl != null ? callbackUrl.ToString() : string.Empty;
         }
         catch (OperationCanceledException)
         {
@@ -71,8 +72,11 @@ public sealed class LoopbackHttpListener : IDisposable
 
     public void Dispose()
     {
-        _cts?.Cancel();
-        _cts?.Dispose();
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+        }
         _listener.Stop();
         _listener.Close();
         _listener = null;

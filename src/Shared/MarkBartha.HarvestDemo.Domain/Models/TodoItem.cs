@@ -2,7 +2,7 @@ namespace MarkBartha.HarvestDemo.Domain.Models;
 
 public record TodoItem
 {
-    public string Id { get; init; }
+    public string Id { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
     public bool IsCompleted { get; init; }
     public DateTimeOffset CreatedAt { get; init; }

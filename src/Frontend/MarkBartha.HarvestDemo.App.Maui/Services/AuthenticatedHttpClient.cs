@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
@@ -18,11 +18,14 @@ public class AuthenticatedHttpClient
     public async Task<HttpClient> GetClientAsync()
     {
         var token = await _authStateProvider.GetAccessTokenAsync();
-        if (token is { Length: > 0 } tokenValue &&
-            _httpClient.DefaultRequestHeaders.Authorization?.Parameter != tokenValue)
+        if (!string.IsNullOrEmpty(token))
         {
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", tokenValue);
+            var authorization = _httpClient.DefaultRequestHeaders.Authorization;
+            if (authorization == null || authorization.Parameter != token)
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
+            }
         }
 
         return _httpClient;

@@ -67,8 +67,13 @@
     [Parameter]
     public EventCallback OnSignOut { get; set; }
 
-    private string UserName => UserProfileState.Profile?.UserName ?? "Harvest Demo";
-    private string UserEmail => UserProfileState.Profile?.Email ?? "orchard.harvest@example.com";
+    private string UserName => UserProfileState.HasProfile
+        ? UserProfileState.Profile.UserName
+        : "Harvest Demo";
+
+    private string UserEmail => UserProfileState.HasProfile
+        ? UserProfileState.Profile.Email
+        : "orchard.harvest@example.com";
 
     protected override void OnInitialized()
     {

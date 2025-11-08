@@ -26,7 +26,7 @@ else
 @code {
     private bool _initialized;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
         // var loggedIn = await AuthStateProvider.TrySilentLoginAsync();
 
@@ -36,5 +36,6 @@ else
         // }
 
         _initialized = true;
+        return Task.CompletedTask;
     }
 }

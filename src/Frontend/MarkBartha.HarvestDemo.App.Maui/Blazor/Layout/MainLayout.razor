@@ -26,7 +26,7 @@
         Navigation.LocationChanged += HandleLocationChanged;
     }
 
-    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
     {
         UpdateHeaderTitle(e.Location);
         _ = InvokeAsync(StateHasChanged);

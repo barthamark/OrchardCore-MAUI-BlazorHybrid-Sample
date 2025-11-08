@@ -43,8 +43,8 @@
     private ElementReference inputElement;
     private string currentValue = string.Empty;
 
-    [Parameter] public string? Value { get; set; }
-    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
     [Parameter] public EventCallback OnSubmit { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
@@ -70,7 +70,7 @@
 
     private Task HandleInput(ChangeEventArgs args)
     {
-        currentValue = args.Value?.ToString() ?? string.Empty;
+        currentValue = args.Value != null ? args.Value.ToString() : string.Empty;
         return ValueChanged.HasDelegate ? ValueChanged.InvokeAsync(currentValue) : Task.CompletedTask;
     }
 

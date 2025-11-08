@@ -9,6 +9,7 @@
 @{
     var todos = TodoState.Items;
     var isLoading = TodoState.IsLoading;
+    var isEmptyState = !isLoading && todos.Count == 0;
 }
 
 <main class="content-container page-padding pb-32 md:pb-6 flex-1">
@@ -16,20 +17,20 @@
 
         <section class="hidden md:block">
             <AddTodo IsInline="true"
-                          Value="@newTodoText"
-                          ValueChanged="HandleDesktopValueChanged"
-                          OnSubmit="AddTodoFromDesktopAsync"
-                          OnKeyDown="HandleDesktopKeyDownAsync"
+                          Value="@GetInput(AddTodoContext.Desktop)"
+                          ValueChanged="value => HandleValueChanged(AddTodoContext.Desktop, value)"
+                          OnSubmit="() => AddTodoAsync(AddTodoContext.Desktop)"
+                          OnKeyDown="args => HandleKeyDownAsync(AddTodoContext.Desktop, args)"
                           @ref="desktopAddRef"/>
         </section>
 
         <section class="md:hidden @(isAddingMobile ? string.Empty : "hidden")">
             <AddTodo IsInline="false"
-                          Value="@newTodoMobileText"
-                          ValueChanged="HandleMobileValueChanged"
-                          OnSubmit="AddTodoFromMobileAsync"
+                          Value="@GetInput(AddTodoContext.Mobile)"
+                          ValueChanged="value => HandleValueChanged(AddTodoContext.Mobile, value)"
+                          OnSubmit="() => AddTodoAsync(AddTodoContext.Mobile)"
                           OnCancel="CancelMobileAdd"
-                          OnKeyDown="HandleMobileKeyDownAsync"
+                          OnKeyDown="args => HandleKeyDownAsync(AddTodoContext.Mobile, args)"
                           @ref="mobileAddRef"/>
         </section>
 
@@ -42,7 +43,7 @@
 
         <TodoList Items="todos" Toggle="ToggleTodoAsync" Delete="DeleteTodoAsync"/>
 
-        <section class="text-center py-12 @((!isLoading && todos.Count == 0) ? string.Empty : "hidden")" data-state="empty">
+        <section class="text-center py-12 @(isEmptyState ? string.Empty : "hidden")" data-state="empty">
             <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center bg-brand text-white">
                 <i class="icon-check text-xl" aria-hidden="true"></i>
             </div>
@@ -54,77 +55,106 @@
 <FloatingActionButton Hidden="@isAddingMobile" OnClick="StartMobileAddAsync" />
 
 @code {
-    private CancellationTokenSource? _cts;
+    private CancellationTokenSource _cts;
     private string newTodoText = string.Empty;
     private string newTodoMobileText = string.Empty;
     private bool isAddingMobile;
 
-    private AddTodo? desktopAddRef;
-    private AddTodo? mobileAddRef;
+    private AddTodo desktopAddRef = null;
+    private AddTodo mobileAddRef = null;
 
     protected override async Task OnInitializedAsync()
     {
-        _cts = new CancellationTokenSource();
         TodoState.StateChanged += HandleTodoStateChanged;
 
+        _cts = new CancellationTokenSource();
         await UserProfileState.EnsureLoadedAsync(_cts.Token);
         await TodoState.InitializeAsync(_cts.Token);
     }
 
     private void HandleTodoStateChanged() => InvokeAsync(StateHasChanged);
 
-    private void HandleDesktopValueChanged(string? value) => newTodoText = value ?? string.Empty;
-    private void HandleMobileValueChanged(string? value) => newTodoMobileText = value ?? string.Empty;
-
-    private async Task AddTodoFromDesktopAsync()
+    private enum AddTodoContext
     {
-        if (await TryAddTodoAsync(newTodoText))
+        Desktop,
+        Mobile,
+    }
+
+    private string GetInput(AddTodoContext context) =>
+        context switch
         {
-            newTodoText = string.Empty;
+            AddTodoContext.Desktop => newTodoText,
+            AddTodoContext.Mobile => newTodoMobileText,
+            _ => throw new ArgumentOutOfRangeException(nameof(context), context, null),
+        };
+
+    private void SetInput(AddTodoContext context, string value)
+    {
+        switch (context)
+        {
+            case AddTodoContext.Desktop:
+                newTodoText = value;
+                break;
+            case AddTodoContext.Mobile:
+                newTodoMobileText = value;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(context), context, null);
         }
     }
 
-    private async Task AddTodoFromMobileAsync()
+    private void HandleValueChanged(AddTodoContext context, string value) =>
+        SetInput(context, NormalizeInput(value));
+
+    private async Task AddTodoAsync(AddTodoContext context)
     {
-        if (await TryAddTodoAsync(newTodoMobileText))
+        if (await TryAddTodoAsync(GetInput(context)))
         {
-            newTodoMobileText = string.Empty;
-            isAddingMobile = false;
+            SetInput(context, string.Empty);
+            if (context == AddTodoContext.Mobile)
+            {
+                isAddingMobile = false;
+            }
         }
     }
 
-    private async Task<bool> TryAddTodoAsync(string? value)
+    private async Task HandleKeyDownAsync(AddTodoContext context, KeyboardEventArgs args)
     {
-        var trimmed = value?.Trim();
+        if (args.Key == "Enter")
+        {
+            await AddTodoAsync(context);
+        }
+    }
+
+    private async Task<bool> TryAddTodoAsync(string value)
+    {
+        var trimmed = value.Trim();
         if (string.IsNullOrWhiteSpace(trimmed))
         {
             return false;
         }
 
-        var token = _cts?.Token ?? CancellationToken.None;
-        await TodoState.AddAsync(trimmed, token);
+        await TodoState.AddAsync(trimmed, GetCancellationToken());
         return true;
     }
 
     private Task ToggleTodoAsync(string id)
     {
-        var token = _cts?.Token ?? CancellationToken.None;
-        return TodoState.ToggleAsync(id, token);
+        return TodoState.ToggleAsync(id, GetCancellationToken());
     }
 
     private Task DeleteTodoAsync(string id)
     {
-        var token = _cts?.Token ?? CancellationToken.None;
-        return TodoState.DeleteAsync(id, token);
+        return TodoState.DeleteAsync(id, GetCancellationToken());
     }
 
     private async Task StartMobileAddAsync()
     {
         isAddingMobile = true;
-        newTodoMobileText = string.Empty;
+        SetInput(AddTodoContext.Mobile, string.Empty);
 
         await Task.Yield();
-        if (mobileAddRef is not null)
+        if (mobileAddRef != null)
         {
             await mobileAddRef.FocusAsync();
         }
@@ -132,30 +162,14 @@
 
     private void CancelMobileAdd()
     {
-        newTodoMobileText = string.Empty;
+        SetInput(AddTodoContext.Mobile, string.Empty);
         isAddingMobile = false;
-    }
-
-    private async Task HandleDesktopKeyDownAsync(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-        {
-            await AddTodoFromDesktopAsync();
-        }
-    }
-
-    private async Task HandleMobileKeyDownAsync(KeyboardEventArgs args)
-    {
-        if (args.Key == "Enter")
-        {
-            await AddTodoFromMobileAsync();
-        }
     }
 
     public ValueTask DisposeAsync()
     {
         TodoState.StateChanged -= HandleTodoStateChanged;
-        if (_cts is not null)
+        if (_cts != null)
         {
             _cts.Cancel();
             _cts.Dispose();
@@ -163,4 +177,8 @@
 
         return ValueTask.CompletedTask;
     }
+
+    private static string NormalizeInput(string value) => value ?? string.Empty;
+
+    private CancellationToken GetCancellationToken() => _cts != null ? _cts.Token : CancellationToken.None;
 }

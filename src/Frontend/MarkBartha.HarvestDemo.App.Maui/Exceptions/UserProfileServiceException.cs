@@ -10,10 +10,10 @@ public class UserProfileServiceException : Exception
     {
     }
 
-    public UserProfileServiceException(string message, Exception? innerException)
+    public UserProfileServiceException(string message, Exception innerException = null)
         : base(message, innerException)
     {
     }
 
-    public HttpStatusCode? StatusCode { get; init; }
+    public Nullable<HttpStatusCode> StatusCode { get; init; }
 }

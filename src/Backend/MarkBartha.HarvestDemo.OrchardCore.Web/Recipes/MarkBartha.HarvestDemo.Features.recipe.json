@@ -17,8 +17,6 @@
       "enable": [
         "OrchardCore.AdminMenu",
         "OrchardCore.AuditTrail",
-        "OrchardCore.Users.CustomUserSettings",
-        "OrchardCore.Users.Registration",
         "OrchardCore.Contents.Deployment.ExportContentToDeploymentTarget",
         "MarkBartha.HarvestDemo.OrchardCore.ToDos",
         "MarkBartha.HarvestDemo.OrchardCore.Theme"

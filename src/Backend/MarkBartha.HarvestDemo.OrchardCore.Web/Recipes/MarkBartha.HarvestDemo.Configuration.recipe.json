@@ -108,23 +108,13 @@
         "AllowedContentTypes": []
       },
       "LoginSettings": {
-        "UseSiteTheme": false,
+        "UseSiteTheme": true,
         "UseExternalProviderIfOnlyOneDefined": false,
         "DisableLocalLogin": false,
         "UseScriptToSyncRoles": false,
         "AllowChangingUsername": false,
         "AllowChangingEmail": false,
-        "AllowChangingPhoneNumber": true
-      },
-      "RegistrationSettings": {
-        "UsersCanRegister": "NoRegistration",
-        "UsersMustValidateEmail": false,
-        "UsersAreModerated": false,
-        "UseSiteTheme": false,
-        "NoPasswordForExternalUsers": false,
-        "NoUsernameForExternalUsers": false,
-        "NoEmailForExternalUsers": false,
-        "UseScriptToGenerateUsername": false
+        "AllowChangingPhoneNumber": false
       }
     },
     {
@@ -202,14 +192,6 @@
                 "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.Users.Models.LoginSettings, OrchardCore.Users.Core]], OrchardCore.Settings.Core",
                 "Id": "78bc3cf389c84c7d9b4ca0af768ba516",
                 "Name": "LoginSettings_SiteSettingsPropertyDeploymentStep"
-              }
-            },
-            {
-              "Type": "RegistrationSettings_SiteSettingsPropertyDeploymentStep",
-              "Step": {
-                "$type": "OrchardCore.Settings.Deployment.SiteSettingsPropertyDeploymentStep\u00601[[OrchardCore.Users.Models.RegistrationSettings, OrchardCore.Users]], OrchardCore.Settings.Core",
-                "Id": "e1ef49a98dcf49a49aeb289511db6d33",
-                "Name": "RegistrationSettings_SiteSettingsPropertyDeploymentStep"
               }
             }
           ]

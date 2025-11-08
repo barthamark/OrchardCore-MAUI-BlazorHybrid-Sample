@@ -60,12 +60,12 @@ public class ExternalAuthenticationStateProvider : AuthenticationStateProvider
         _navigationManager.NavigateTo("/", forceLoad: true);
     }
 
-    public async Task<string?> GetAccessTokenAsync()
+    public async Task<string> GetAccessTokenAsync()
     {
         var token = await SecureStorage.GetAsync("access_token");
         if (string.IsNullOrEmpty(token))
         {
-            return null;
+            return string.Empty;
         }
 
         var refreshToken = await SecureStorage.GetAsync("refresh_token");
@@ -80,7 +80,7 @@ public class ExternalAuthenticationStateProvider : AuthenticationStateProvider
             }
         }
 
-        return token;
+        return token ?? string.Empty;
     }
 
     public async Task<bool> TrySilentLoginAsync()

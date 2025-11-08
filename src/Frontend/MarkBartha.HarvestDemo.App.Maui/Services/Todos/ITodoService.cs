@@ -31,8 +31,8 @@ public interface ITodoService
     /// <param name="id">The identifier of the todo item to update.</param>
     /// <param name="isCompleted">A value indicating whether the item should be marked complete.</param>
     /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The updated todo item when available; otherwise <c>null</c> if the backend omits a body.</returns>
-    Task<TodoItem?> SetCompletionAsync(string id, bool isCompleted, CancellationToken cancellationToken = default);
+    /// <returns>The updated todo item as returned by the backend.</returns>
+    Task<TodoItem> SetCompletionAsync(string id, bool isCompleted, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes the specified todo item.

@@ -6,23 +6,20 @@
          role="list">
     <h2 id="todo-list-heading" class="sr-only">To-dos</h2>
 
-    @if (Items is not null)
+    @foreach (var todo in Items)
     {
-        foreach (var todo in Items)
-        {
-            <TodoItemCard Id="@todo.Id"
-                          Title="@todo.Title"
-                          IsCompleted="@todo.IsCompleted"
-                          Toggle="Toggle"
-                          Delete="Delete" />
-        }
+        <TodoItemCard Id="@todo.Id"
+                      Title="@todo.Title"
+                      IsCompleted="@todo.IsCompleted"
+                      Toggle="Toggle"
+                      Delete="Delete" />
     }
 </section>
 
 @code {
-    [Parameter] public IReadOnlyList<TodoItem>? Items { get; set; }
+    [Parameter] public IReadOnlyList<TodoItem> Items { get; set; } = Array.Empty<TodoItem>();
     [Parameter] public EventCallback<string> Toggle { get; set; }
     [Parameter] public EventCallback<string> Delete { get; set; }
 
-    private bool HasItems => Items is { Count: > 0 };
+    private bool HasItems => Items.Count > 0;
 }

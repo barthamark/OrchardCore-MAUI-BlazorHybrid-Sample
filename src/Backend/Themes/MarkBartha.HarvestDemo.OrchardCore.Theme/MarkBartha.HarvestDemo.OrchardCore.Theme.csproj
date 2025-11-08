@@ -35,6 +35,10 @@
       <None Remove="Assets\test.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <RazorGenerate Remove="Views\OrchardCore.Users\Registration\Register.cshtml" />
+    </ItemGroup>
+
     <Import Project="$(MSBuildThisFileDirectory)..\..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\CopyAssets.targets" />
     <Import Project="$(MSBuildThisFileDirectory)..\..\..\Shared\MarkBartha.HarvestDemo.Assets\Targets\RunTailwindBuild.targets" />
 

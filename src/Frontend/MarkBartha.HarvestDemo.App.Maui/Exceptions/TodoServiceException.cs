@@ -8,7 +8,7 @@ public class TodoServiceException : Exception
     {
     }
 
-    public TodoServiceException(string message, Exception? innerException) : base(message, innerException)
+    public TodoServiceException(string message, Exception innerException = null) : base(message, innerException)
     {
     }
 }

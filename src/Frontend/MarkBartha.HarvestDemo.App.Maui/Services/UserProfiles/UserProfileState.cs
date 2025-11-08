@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +16,7 @@ public sealed class UserProfileState : IDisposable
     private readonly SemaphoreSlim _gate = new(1, 1);
     private bool _isInitialized;
     private bool _isLoading;
+    private UserProfile _profile;
 
     public UserProfileState(
         AuthenticationStateProvider authenticationStateProvider,
@@ -31,7 +30,8 @@ public sealed class UserProfileState : IDisposable
         _authenticationStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChangedAsync;
     }
 
-    public UserProfile? Profile { get; private set; }
+    public UserProfile Profile => _profile ?? new UserProfile();
+    public bool HasProfile => _profile != null;
 
     public bool IsLoading
     {
@@ -46,9 +46,9 @@ public sealed class UserProfileState : IDisposable
         }
     }
 
-    public Exception? Error { get; private set; }
+    public Exception Error { get; private set; }
 
-    public event Action? StateChanged;
+    public event Action StateChanged = delegate { };
 
     public async Task EnsureLoadedAsync(CancellationToken cancellationToken = default)
     {
@@ -69,7 +69,7 @@ public sealed class UserProfileState : IDisposable
             Error = null;
 
             var profile = await _userProfileService.GetUserProfileAsync(cancellationToken);
-            Profile = profile;
+            _profile = profile;
             _isInitialized = true;
         }
         catch (OperationCanceledException)
@@ -99,7 +99,8 @@ public sealed class UserProfileState : IDisposable
         try
         {
             var authenticationState = await authenticationStateTask;
-            if (authenticationState.User.Identity?.IsAuthenticated != true)
+            var identity = authenticationState.User.Identity;
+            if (identity == null || !identity.IsAuthenticated)
             {
                 ClearProfile();
                 return;
@@ -121,13 +122,13 @@ public sealed class UserProfileState : IDisposable
 
     private void ClearProfile()
     {
-        Profile = null;
+        _profile = null;
         Error = null;
         _isInitialized = false;
         NotifyStateChanged();
     }
 
-    private void NotifyStateChanged() => StateChanged?.Invoke();
+    private void NotifyStateChanged() => StateChanged();
 
     public void Dispose()
     {
