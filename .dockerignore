@@ -1,0 +1,15 @@
+# build artifacts
+**/bin/
+**/obj/
+**/out/
+
+# skip the MAUI client and other local tooling
+src/Frontend/
+.git/
+.idea/
+.vs/
+
+# misc
+*.user
+*.suo
+*.DS_Store
