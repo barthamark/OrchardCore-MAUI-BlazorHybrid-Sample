@@ -72,4 +72,6 @@ If you host elsewhere, reuse the Dockerfile and substitute your platform-specifi
 
 ---
 
+Need a condensed summary for AI helpers? See `AGENTS.md` for the up-to-date agent playbook.
+
 Feel free to open issues, send PRs, or reach out through any of the channels listed on [markbartha.com](https://markbartha.com). I'd love to hear what you build with this demo.
