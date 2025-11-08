@@ -13,10 +13,13 @@ public static class AppConfig
 #if DEBUG
 
     public static EnvironmentType Environment => EnvironmentType.Development;
-    public static string BackendBaseUrl => "https://localhost:7501";
+    
+    // Replace this to the localhost version if needed.
+    //// public static string BackendBaseUrl => "https://localhost:7501";
+    public static string BackendBaseUrl => "https://markbartha-harvestdemo-orchardcore-web.fly.dev";
 #else
     public static EnvironmentType Environment => EnvironmentType.Production;
-    public static string BackendBaseUrl => "https://forespend.com";
+    public static string BackendBaseUrl => "https://markbartha-harvestdemo-orchardcore-web.fly.dev";
 #endif
     public static string ApiBaseUrl => BackendBaseUrl + "/api/";
 
