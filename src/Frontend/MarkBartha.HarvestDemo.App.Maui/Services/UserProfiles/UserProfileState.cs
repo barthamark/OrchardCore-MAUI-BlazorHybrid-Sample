@@ -17,6 +17,7 @@ public sealed class UserProfileState : IDisposable
     private bool _isInitialized;
     private bool _isLoading;
     private UserProfile _profile;
+    private bool _isDisposed;
 
     public UserProfileState(
         AuthenticationStateProvider authenticationStateProvider,
@@ -62,9 +63,16 @@ public sealed class UserProfileState : IDisposable
 
     public async Task ReloadAsync(CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
+
         await _gate.WaitAsync(cancellationToken);
         try
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             IsLoading = true;
             Error = null;
 
@@ -96,6 +104,11 @@ public sealed class UserProfileState : IDisposable
 
     private async void HandleAuthenticationStateChangedAsync(Task<AuthenticationState> authenticationStateTask)
     {
+        if (_isDisposed)
+        {
+            return;
+        }
+
         try
         {
             var authenticationState = await authenticationStateTask;
@@ -130,9 +143,22 @@ public sealed class UserProfileState : IDisposable
 
     private void NotifyStateChanged() => StateChanged();
 
+    private void ThrowIfDisposed()
+    {
+        if (_isDisposed)
+        {
+            throw new ObjectDisposedException(nameof(UserProfileState));
+        }
+    }
+
     public void Dispose()
     {
+        if (_isDisposed)
+        {
+            return;
+        }
+
         _authenticationStateProvider.AuthenticationStateChanged -= HandleAuthenticationStateChangedAsync;
-        _gate.Dispose();
+        _isDisposed = true;
     }
 }
