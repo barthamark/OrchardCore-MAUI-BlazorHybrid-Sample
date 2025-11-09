@@ -38,13 +38,6 @@
 
     <nav class="p-4 space-y-2">
         <button type="button"
-                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
-                @onclick="NavigateToAccount">
-            <i class="icon-user text-gray-600" aria-hidden="true"></i>
-            <span class="font-medium">Account</span>
-        </button>
-
-        <button type="button"
                 class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition-colors text-left group"
                 @onclick="HandleSignOut">
             <i class="icon-log-out text-gray-600 group-hover:text-red-600" aria-hidden="true"></i>
@@ -97,13 +90,6 @@
             await OnSignOut.InvokeAsync();
         }
     }
-
-    private async Task NavigateToAccount()
-    {
-        await HandleClose();
-        Navigation.NavigateTo("/account", forceLoad: false);
-    }
-
     private void HandleUserProfileChanged()
     {
         _ = InvokeAsync(StateHasChanged);
